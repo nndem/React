@@ -1,0 +1,26 @@
+/*.root {*/
+    /*min-width: 275px;*/
+/*}*/
+
+.bullet {
+    display: inline-block;
+    margin: 0 2px;
+    transform: scale(0.8);
+}
+
+.title {
+    font-size: 14px;
+}
+
+.pos {
+    margin-bottom: 12px;
+}
+
+.root {
+    flex-grow: 1;
+}
+.paper {
+    padding: 10px;
+    text-align: center;
+    color: #f5f5f5;
+}
