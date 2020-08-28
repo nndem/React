@@ -1,79 +1,130 @@
-// Компонент Регистрации Developers
+import React from 'react';
+import firebase from 'firebase';
+import classes from './SignUp.module.css';
+import {useDispatch, useSelector} from 'react-redux';
+import {useHistory} from 'react-router';
 
-import  React from 'react';
-//import {useHistory } from 'react-router-dom'
-
+import {Button, TextField, Typography} from '@material-ui/core';
 import {
-    Button,
-    CssBaseline,
-    TextField,
-    Typography,
-
-
-}from '@material-ui/core';
-
-import classes from './SignUp.module.css'
-
-import firebase from  'firebase'
-import {
-    setCity, setCompanyName,
-    setEmail,
-    setExperience,
-    setHasAccountTrue, setIsAuthTrue,
-    setName,
-    setPassword,
-    setStack,
-    setSurname
-} from "../../redux/developers/actions";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router";
-
-
-
-
+  setDeveloperEmail,
+  setDeveloperName,
+  setDeveloperPassword,
+  setDeveloperStack,
+  setDeveloperSurname,
+  setDeveloperExperience,
+} from '../../store/developer/actions';
+import {logIn, setUserType} from '../../store/sessionStore';
 
 export default function SignUpForDev() {
+  const dispatch = useDispatch();
+  let history = useHistory();
 
-    const dispatch = useDispatch() // новый  Хук
+  const {email, password} = useSelector((store) => {
+    return {
+      email: store.developer.developerEmail,
+      password: store.developer.developerPassword,
+    };
+  });
 
-    const email = useSelector(store=>store.user.userName) // redux-ducks
-    const password = useSelector(store=>store.user.userPassword) // redux-ducks
-    let history = useHistory()
+  //СОЗДАНИЕ УЧЕТНОЙ ЗАПИСИ И ПЕРЕХОД НА СТРАНИЦУ HOME
+  const createAccount = async (e) => {
+    e.preventDefault(); //
+    try {
+      await firebase.auth().createUserWithEmailAndPassword(email, password);
 
-    const createAccount = async (e) => {
-        e.preventDefault();//
+      dispatch(setUserType('developer'));
+      dispatch(logIn());
 
-        //СОЗДАНИЕ ПОЛЬЗОВАТЕЛЯ в БД (РЕГИСТРАЦИЯ)
-        try {
-            await firebase.auth().createUserWithEmailAndPassword(email, password)
-            dispatch(setHasAccountTrue())  // redux-ducks for developer
-            dispatch(setIsAuthTrue())
-            history('/home')// redux-ducks for developer
-        } catch (error) {
-            console.error(error)
-        }
+      history.push('/home');
+    } catch (error) {
+      console.error(error);
     }
+  };
 
+  return (
+    <>
+      <div className={classes.paper}>
+        <Typography component="h1" variant="h5">
+          Регистрация Нового Разработчика
+        </Typography>
 
+        <form className={classes.form} onSubmit={(e) => createAccount(e)}>
+          <TextField
+            onChange={(e) => dispatch(setDeveloperEmail(e.target.value))}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            type="email"
+            autoComplete="email"
+            autoFocus
+          />
 
-    return (<>
-            <CssBaseline />
-            <div className={classes.paper}>
-                <Typography component="h1" variant="h5">Регистрация Developer</Typography>
+          <TextField
+            onChange={(e) => dispatch(setDeveloperPassword(e.target.value))}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+          />
 
-                <form className={classes.form} onSubmit= {(e) => createAccount(e)}>
+          <TextField
+            onChange={(e) => dispatch(setDeveloperName(e.target.value))}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="Name"
+            label="Name"
+            id="Name"
+          />
 
-                    <TextField id='email' label ='Email' placeholder='Email' onChange={ (e)=> dispatch(setEmail(e.target.value))}/>
-                    <TextField id='password' label ='Password' placeholder='Пароль' required onChange={ (e)=> dispatch(setPassword(e.target.value))} />
-                    <TextField id='companyName' label ='outlined' placeholder='Введите название компании' required onChange={ (e)=> dispatch(setCompanyName(e.target.value))} />
-                    <TextField id='stacks' label= 'outlined' placeholder='Введите технологии' required onChange={  (e)=>dispatch(setCompanyName(e.target.value))} />
-                    <TextField id='city' label= 'outlined' placeholder='Введите город' required onChange={   (e)=>dispatch(setCity(e.target.value))} />
-                    <TextField id='experience' label= 'outlined' placeholder='Опыт' required onChange={   (e)=>dispatch(setExperience(e.target.value))} />
+          <TextField
+            onChange={(e) => dispatch(setDeveloperSurname(e.target.value))}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="Surname"
+            label="Surname"
+            id="Surname"
+          />
 
-                    <Button type="submit" color="primary" variant="contained">Зарегистрироваться</Button>
+          <TextField
+            onChange={(e) => dispatch(setDeveloperStack(e.target.value))}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="Stack"
+            label="Stack"
+            id="Stack"
+          />
 
-                </form>
-            </div>
-        </>
-    );
+          <TextField
+            onChange={(e) => dispatch(setDeveloperExperience(e.target.value))}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="Experience"
+            label="Experience"
+            id="Experience"
+          />
+
+          <Button type="submit" color="primary" variant="contained">
+            Зарегистрировать
+          </Button>
+        </form>
+      </div>
+    </>
+  );
 }

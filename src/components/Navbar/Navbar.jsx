@@ -1,20 +1,38 @@
-import React from 'react'
-import classes from './Navbar.module.css'
-import { NavLink } from 'react-router-dom'
-import {useSelector} from 'react-redux'
-import store, {signOut} from '../../old_store/store'
+import React from 'react';
+import classes from './Navbar.module.css';
+import {NavLink} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 
-const Nav = () =>{
-    const isAuth = useSelector(store=>store.user.isAuth)
-        return  <nav className={classes.nav}>
-        <div className={classes.item}>
-            {!isAuth ? <NavLink to='/signIn' activeClassName={classes.activeLink}>Войти</NavLink>:''}
-            { isAuth ? <NavLink onClick={()=>store.dispatch(signOut())} to='/signIn' activeClassName={classes.activeLink}>Выйти</NavLink>:''}
+const Nav = () => {
+  const dispatch = useDispatch();
+  const isAuth = useSelector((rootStore) => rootStore.session.isAuth);
 
-        </div>
+  return (
+    <nav className={classes.nav}>
+      <div className={classes.item}>
+        {!isAuth ? (
+          <NavLink to="/LogIn" activeClassName={classes.activeLink}>
+            Войти
+          </NavLink>
+        ) : (
+          <NavLink to="/StartingPage" activeClassName={classes.activeLink}>
+            Выйти
+          </NavLink>
+        )}
+
+        {!isAuth ? (
+          <NavLink to="/SignUp" activateClassName={classes.activeLink}>
+            Зарегистрироваться
+          </NavLink>
+        ) : (
+          ''
+        )}
+        <NavLink to="/" activateClassName={classes.activeLink}>
+          Стартовая страница
+        </NavLink>
+      </div>
     </nav>
-}
+  );
+};
 
 export default Nav;
-
-

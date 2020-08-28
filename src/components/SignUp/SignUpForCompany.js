@@ -1,82 +1,95 @@
 // Компонент Регистрации Developers
 
-import  React from 'react';
+import React from 'react';
 
+import {Button, TextField, Typography} from '@material-ui/core';
 
-import {
-    Button,
-    CssBaseline,
-    TextField,
-    Typography,
+import classes from './SignUp.module.css';
 
-}from '@material-ui/core';
-
-import classes from './SignUp.module.css'
-
-import firebase from  'firebase'
-import {
-    setCity,
-    setEmail,
-    setExperience,
-    setHasAccountTrue, setIsAuthTrue,
-    setName,
-    setPassword,
-    setStack,
-    setSurname
-} from "../../redux/companies/actions";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
+import firebase from 'firebase';
+import {useDispatch, useSelector} from 'react-redux';
+import {useHistory} from 'react-router-dom';
+import {setCompanyName, setCompanyEmail, setCompanyPassword} from '../../store/company/actions';
+import {logIn, setUserType} from '../../store/sessionStore';
 
 export default function SignUpForCompany() {
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch()
+  const {email, password} = useSelector((store) => {
+    return {
+      email: store.company.companyEmail,
+      password: store.company.companyPassword,
+    };
+  });
+  const history = useHistory();
 
-    const email = useSelector(store=>store.user.userName) // redux-ducks
-    const password = useSelector(store=>store.user.userPassword) // redux-ducks
-    let history = useHistory()
+  //СОЗДАНИЕ УЧЕТНОЙ ЗАПИСИ И ПЕРЕХОД НА СТРАНИЦУ HOME
+  const createAccount = async (e) => {
+    e.preventDefault(); //
+    try {
+      await firebase.auth().createUserWithEmailAndPassword(email, password);
 
+      dispatch(setUserType('company'));
+      dispatch(logIn());
 
-    const createAccount = async (e) => {
-        e.preventDefault();//
-
-        //СОЗДАНИЕ ПОЛЬЗОВАТЕЛЯ-КОМПАНИЯ в БД (РЕГИСТРАЦИЯ)
-        try {
-            await firebase.auth().createUserWithEmailAndPassword(email, password)
-            //store.dispatch(signIn())      // redux-ducks
-            dispatch(setHasAccountTrue()) // redux-ducks for company
-            dispatch(setIsAuthTrue())   // redux-ducks for company
-            history('/home')// переход на страницу home
-        } catch (error) {
-            console.error(error)
-        }
+      history.push('/home');
+    } catch (error) {
+      console.error(error);
     }
+  };
 
+  return (
+    <>
+      <div className={classes.paper}>
+        <Typography component="h1" variant="h5">
+          Регистрация Новой Компании
+        </Typography>
 
-    return (<>
-            <CssBaseline />
+        <form className={classes.form} onSubmit={(e) => createAccount(e)}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            type="email"
+            autoComplete="email"
+            autoFocus
+            onChange={(e) => dispatch(setCompanyEmail(e.target.value))}
+          />
 
-            <div className={classes.paper}>
-                <Typography component="h1" variant="h5">Регистрация Developer</Typography>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            onChange={(e) => dispatch(setCompanyPassword(e.target.value))}
+          />
 
-                <form className={classes.form} onSubmit= {(e) => createAccount(e)}>
-                    <TextField id='email' label ='Email' placeholder='Email' onChange={  (e)=>  dispatch(setEmail(e.target.value))  }/>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="CompanyName"
+            label="CompanyName"
+            //type="password"
+            id="Name"
+            onChange={(e) => dispatch(setCompanyName(e.target.value))}
+          />
 
-                    <TextField id='password' label ='Password' placeholder='Пароль' required onChange={  (e)=>dispatch(setPassword(e.target.value))  }/>
-
-                    <TextField id='name' label ='outlined' placeholder='Введите имя' required onChange= {  (e) => dispatch(setName(e.target.value))} />
-
-                    <TextField id='surname' label ='outlined' placeholder='Введите фамилию' required onChange={  (e)=>dispatch(setSurname(e.target.value))}/>
-
-                    <TextField id='city' label= 'outlined' placeholder='Введите город' required onChange={(e)=>dispatch(setCity(e.target.value))  } />
-
-
-                    <Button type="submit" color="primary" variant="contained">Зарегистрироваться</Button>
-
-                </form>
-            </div>*/
-
-
-
-        </>
-    );
+          <Button type="submit" color="primary" variant="contained">
+            Зарегистрировать
+          </Button>
+        </form>
+      </div>
+    </>
+  );
 }
