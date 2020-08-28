@@ -18,6 +18,7 @@ import classes from './LogIn.module.css';
 import {useDispatch} from 'react-redux';
 import firebase from 'firebase';
 import {logIn, setUserType} from '../../store/sessionStore';
+import {Field, Formik} from 'formik';
 
 export default function LogIn() {
   const history = useHistory(); // хук для перехода на другую страницу
@@ -46,55 +47,75 @@ export default function LogIn() {
           Вход в систему
         </Typography>
 
-        <form className={classes.form} onSubmit={(e) => SignIn(e)}>
-          <TextField
-            onChange={(e) => setEmail(e.target.value)}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            type="email"
-            autoComplete="email"
-            autoFocus
-          />
+        <Formik
+          initialValues={{
+            email: '',
+            password: '',
+            userType: 'developer',
+          }}
+          onSubmit={(values) => console.log('VALUES: ', values)}
+        >
+          {(props) => {
+            return (
+              <form className={classes.form}>
+                <Field as="email" name="email" label="Email Address">
+                  {({field, form, meta}) => {
+                    console.log(field, meta);
+                    return (
+                      <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        type="email"
+                        autoComplete="email"
+                        autoFocus
+                        inputProps={field}
+                        //onChange={props.onChange}
+                      />
+                    );
+                  }}
+                </Field>
 
-          <TextField
-            onChange={(e) => setPassword(e.target.value)}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
+                <TextField
+                  onChange={(e) => setPassword(e.target.value)}
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                />
 
-          <FormLabel component="legend">Тип пользователя</FormLabel>
-          <RadioGroup
-            defaultValue="developer"
-            required="required"
-            //параметр для установки сессии
-            onChange={(event) => dispatch(setUserType(event.target.value))}
-          >
-            <FormControlLabel value="developer" control={<Radio />} label="Developer" />
-            <FormControlLabel value="company" control={<Radio />} label="Company" />
-          </RadioGroup>
+                <FormLabel component="legend">Тип пользователя</FormLabel>
+                <RadioGroup
+                  defaultValue="developer"
+                  required="required"
+                  //параметр для установки сессии
+                  onChange={(event) => dispatch(setUserType(event.target.value))}
+                >
+                  <FormControlLabel value="developer" control={<Radio />} label="Developer" />
+                  <FormControlLabel value="company" control={<Radio />} label="Company" />
+                </RadioGroup>
 
-          <Button
-            type="submit" // привязывает кнопку к форме, onSubmit работает только на форме, поэтому пишут onClick, либо как я
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Войти
-          </Button>
-        </form>
+                <Button
+                  // type="submit" // привязывает кнопку к форме, onSubmit работает только на форме, поэтому пишут onClick, либо как я
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  onClick={props.submitForm}
+                >
+                  Войти
+                </Button>
+              </form>
+            );
+          }}
+        </Formik>
       </div>
     </>
   );

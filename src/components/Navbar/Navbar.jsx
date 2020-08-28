@@ -2,10 +2,12 @@ import React from 'react';
 import classes from './Navbar.module.css';
 import {NavLink} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
+import {LogOut} from '../../store/sessionStore';
 
 const Nav = () => {
-  const dispatch = useDispatch();
   const isAuth = useSelector((rootStore) => rootStore.session.isAuth);
+  const userType = useSelector((rootStore) => rootStore.session.userType);
+  const dispatch = useDispatch();
 
   return (
     <nav className={classes.nav}>
@@ -15,21 +17,37 @@ const Nav = () => {
             Войти
           </NavLink>
         ) : (
-          <NavLink to="/StartingPage" activeClassName={classes.activeLink}>
+          <NavLink
+            to="/"
+            activeClassName={classes.activeLink}
+            onClick={() => {
+              dispatch(LogOut());
+            }}
+          >
             Выйти
           </NavLink>
         )}
 
         {!isAuth ? (
-          <NavLink to="/SignUp" activateClassName={classes.activeLink}>
+          <NavLink to="/SignUp" activeClassName={classes.activeLink}>
             Зарегистрироваться
           </NavLink>
         ) : (
           ''
         )}
-        <NavLink to="/" activateClassName={classes.activeLink}>
+        <NavLink to="/" activeClassName={classes.activeLink}>
           Стартовая страница
         </NavLink>
+        {isAuth &&
+          (userType === 'developer' ? (
+            <NavLink to="/Home" activeClassName={classes.activeLink}>
+              Список проектов
+            </NavLink>
+          ) : (
+            <NavLink to="/Home" activeClassName={classes.activeLink}>
+              Список разработчиков
+            </NavLink>
+          ))}
       </div>
     </nav>
   );
