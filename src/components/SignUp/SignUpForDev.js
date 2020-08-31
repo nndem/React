@@ -1,7 +1,7 @@
 import React from 'react';
 import firebase from 'firebase';
 import classes from './SignUp.module.css';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 import {useHistory} from 'react-router';
 
 import {Button, TextField, Typography} from '@material-ui/core';
@@ -14,32 +14,56 @@ import {
   setDeveloperExperience,
 } from '../../store/developer/actions';
 import {logIn, setUserType} from '../../store/sessionStore';
+import {useFormik} from 'formik';
 
 export default function SignUpForDev() {
   const dispatch = useDispatch();
   let history = useHistory();
-
-  const {email, password} = useSelector((store) => {
-    return {
-      email: store.developer.developerEmail,
-      password: store.developer.developerPassword,
-    };
-  });
+  const userType = useSelector((store) => store.session.userType);
 
   //СОЗДАНИЕ УЧЕТНОЙ ЗАПИСИ И ПЕРЕХОД НА СТРАНИЦУ HOME
   const createAccount = async (e) => {
-    e.preventDefault(); //
+    //e.preventDefault(); //
     try {
-      await firebase.auth().createUserWithEmailAndPassword(email, password);
-
-      dispatch(setUserType('developer'));
-      dispatch(logIn());
-
-      history.push('/home');
+      await firebase.auth().createUserWithEmailAndPassword(values.email, values.password);
+      saveEmailAndPasswordAndUserTypeToStore(values.email, values.password);
+      loadPage();
     } catch (error) {
       console.error(error);
     }
   };
+
+  const saveEmailAndPasswordAndUserTypeToStore = (email, password) => {
+    if (userType === 'developer') {
+      saveDeveloperEmailAndUserTypePassword(email, password);
+    }
+  };
+  const saveDeveloperEmailAndUserTypePassword = (email, password) => {
+    batch(() => {
+      dispatch(setDeveloperEmail(email));
+      dispatch(setDeveloperPassword(password));
+      dispatch(setUserType('developer'));
+    });
+  };
+
+  const loadPage = () => {
+    dispatch(logIn()); //устанавливаем сессию
+    history.push('/home');
+  };
+
+  const {handleSubmit, handleChange, values} = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+      name: '',
+      surname: '',
+      stack: '',
+      experience: '',
+    },
+    onSubmit: async () => {
+      await createAccount();
+    },
+  });
 
   return (
     <>
@@ -48,9 +72,8 @@ export default function SignUpForDev() {
           Регистрация Нового Разработчика
         </Typography>
 
-        <form className={classes.form} onSubmit={(e) => createAccount(e)}>
+        <form className={classes.form} onSubmit={handleSubmit}>
           <TextField
-            onChange={(e) => dispatch(setDeveloperEmail(e.target.value))}
             variant="outlined"
             margin="normal"
             required
@@ -61,63 +84,70 @@ export default function SignUpForDev() {
             type="email"
             autoComplete="email"
             autoFocus
+            onChange={handleChange}
+            value={values.email}
           />
 
           <TextField
-            onChange={(e) => dispatch(setDeveloperPassword(e.target.value))}
             variant="outlined"
             margin="normal"
             required
             fullWidth
             name="password"
-            label="Password"
+            label="password"
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handleChange}
+            value={values.password}
           />
 
           <TextField
-            onChange={(e) => dispatch(setDeveloperName(e.target.value))}
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            name="Name"
-            label="Name"
-            id="Name"
+            name="name"
+            label="name"
+            id="name"
+            onChange={handleChange}
+            value={values.name}
           />
 
           <TextField
-            onChange={(e) => dispatch(setDeveloperSurname(e.target.value))}
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            name="Surname"
-            label="Surname"
-            id="Surname"
+            name="surname"
+            label="surname"
+            id="surname"
+            onChange={handleChange}
+            value={values.surname}
           />
 
           <TextField
-            onChange={(e) => dispatch(setDeveloperStack(e.target.value))}
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            name="Stack"
-            label="Stack"
-            id="Stack"
+            name="stack"
+            label="stack"
+            id="stack"
+            onChange={handleChange}
+            value={values.stack}
           />
 
           <TextField
-            onChange={(e) => dispatch(setDeveloperExperience(e.target.value))}
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            name="Experience"
-            label="Experience"
-            id="Experience"
+            name="experience"
+            label="experience"
+            id="experience"
+            onChange={handleChange}
+            value={values.experience}
           />
 
           <Button type="submit" color="primary" variant="contained">

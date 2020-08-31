@@ -3,7 +3,7 @@ const LOG_IN = 'LOG_IN';
 const LOG_OUT = 'LOG_OUT';
 
 const initialState = {
-  userType: null,
+  userType: 'developer',
   isAuth: false,
 };
 
@@ -15,6 +15,7 @@ export const setUserType = (userType) => {
 };
 
 export const logIn = () => {
+  //добавить еще инфй
   return {
     type: LOG_IN,
   };

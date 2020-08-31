@@ -15,7 +15,11 @@ export default function SignUp() {
     <>
       <form className={classes.form}>
         <FormLabel component="legend">Тип пользователя</FormLabel>
-        <RadioGroup required="required" onChange={(e) => dispatch(setUserType(e.target.value))}>
+        <RadioGroup
+          defaultValue="developer"
+          required="required"
+          onChange={(e) => dispatch(setUserType(e.target.value))}
+        >
           <FormControlLabel value="developer" control={<Radio />} label="Developer" />
           <FormControlLabel value="company" control={<Radio />} label="Company" />
         </RadioGroup>
