@@ -1,3 +1,5 @@
+//СОЗДАНИЕ УЧЕТНОЙ ЗАПИСИ DEVELOPER И ПЕРЕХОД НА СТРАНИЦУ HOME
+
 import React from 'react';
 import firebase from 'firebase';
 import classes from './SignUp.module.css';
@@ -18,36 +20,72 @@ import {useFormik} from 'formik';
 
 export default function SignUpForDev() {
   const dispatch = useDispatch();
-  let history = useHistory();
-  const userType = useSelector((store) => store.session.userType);
+  const history = useHistory();
+  const userType = useSelector((rootStore) => rootStore.session.userType);
 
-  //СОЗДАНИЕ УЧЕТНОЙ ЗАПИСИ И ПЕРЕХОД НА СТРАНИЦУ HOME
-  const createAccount = async (e) => {
-    //e.preventDefault(); //
+  const createAccount = async () => {
     try {
-      await firebase.auth().createUserWithEmailAndPassword(values.email, values.password);
-      saveEmailAndPasswordAndUserTypeToStore(values.email, values.password);
+      const newDevObj = {
+        id: new Date().getUTCMilliseconds(),
+        userType: 'developer',
+        email: values.email,
+        password: values.password,
+        name: values.name,
+        surname: values.surname,
+        stack: values.stack,
+        experience: values.experience,
+      };
+      await writeDeveloperData(newDevObj);
+      let data = await readDevDataFromServer(newDevObj);
+      await saveDataToStore(data);
       loadPage();
     } catch (error) {
       console.error(error);
     }
   };
 
-  const saveEmailAndPasswordAndUserTypeToStore = (email, password) => {
-    if (userType === 'developer') {
-      saveDeveloperEmailAndUserTypePassword(email, password);
-    }
+  const writeDeveloperData = async (DevObj) => {
+    await firebase
+      .database()
+      .ref('developers/' + DevObj.id)
+      .set({
+        id: DevObj.id,
+        userType: DevObj.userType,
+        email: DevObj.email,
+        password: DevObj.password,
+        name: DevObj.name,
+        surname: DevObj.surname,
+        stack: DevObj.stack,
+        experience: DevObj.experience,
+      });
   };
-  const saveDeveloperEmailAndUserTypePassword = (email, password) => {
+
+  const readDevDataFromServer = async (newDevObj) => {
+    let data = {};
+    firebase
+      .database()
+      .ref('developers/' + newDevObj.id)
+      .on('value', (snap) => {
+        data = snap.val();
+      });
+    return data;
+  };
+
+  const saveDataToStore = (obj) => {
     batch(() => {
-      dispatch(setDeveloperEmail(email));
-      dispatch(setDeveloperPassword(password));
-      dispatch(setUserType('developer'));
+      dispatch(setDeveloperEmail(obj.email));
+      dispatch(setDeveloperPassword(obj.password));
+      dispatch(setDeveloperName(obj.name));
+      dispatch(setDeveloperSurname(obj.surname));
+      dispatch(setDeveloperStack(obj.stack));
+      dispatch(setDeveloperExperience(obj.experience));
+      dispatch(setUserType(userType));
     });
   };
 
   const loadPage = () => {
-    dispatch(logIn()); //устанавливаем сессию
+    console.log('LOADING PAGE...');
+    dispatch(logIn());
     history.push('/home');
   };
 

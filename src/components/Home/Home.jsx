@@ -5,6 +5,16 @@ import InfoForCompanies from './InfoForCompanies/InfoForCompanies';
 
 export default function Home() {
   const userType = useSelector((rootStore) => rootStore.session.userType);
-  console.log('userType:', userType);
-  return <div>{userType === 'developer' ? <InfoForDevelopers /> : <InfoForCompanies />}</div>;
+  const isAuth = useSelector((rootStore) => rootStore.session.isAuth);
+  return (
+    <div>
+      {isAuth && userType === 'developer' ? (
+        <InfoForDevelopers />
+      ) : isAuth ? (
+        <InfoForCompanies />
+      ) : (
+        'You are not logged'
+      )}
+    </div>
+  );
 }

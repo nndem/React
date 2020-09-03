@@ -21,6 +21,7 @@ export default function LogIn() {
   const SignIn = async (e) => {
     //e.preventDefault();
     try {
+      console.log('LOGIN:', values.email, 'PASSWORD:', values.password);
       await firebase.auth().signInWithEmailAndPassword(values.email, values.password);
       //записать данные в store
       saveEmailAndPasswordToStore(values.email, values.password);
@@ -33,7 +34,7 @@ export default function LogIn() {
     }
   };
 
-  const userType = useSelector((store) => store.session.userType);
+  const userType = useSelector((rootStore) => rootStore.session.userType);
   const saveEmailAndPasswordToStore = (email, password) => {
     if (userType === 'developer') {
       saveDeveloperEmailAndPassword(email, password);
@@ -96,15 +97,6 @@ export default function LogIn() {
         id="password"
         value={values.password}
       />
-
-      <RadioGroup
-        defaultValue="developer"
-        required="required"
-        onChange={(event) => dispatch(setUserType(event.target.value))}
-      >
-        <FormControlLabel value="developer" control={<Radio />} label="Developer" />
-        <FormControlLabel value="company" control={<Radio />} label="Company" />
-      </RadioGroup>
 
       <Button
         type="submit" // привязывает кнопку к форме, onSubmit работает только на форме, поэтому пишут onClick, либо как я

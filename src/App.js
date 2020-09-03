@@ -20,10 +20,10 @@ import initStore from './store';
 
 const App = () => {
   const store = initStore();
+  // Аналогично didMount
   useEffect(() => {
-    // Аналогично didMount
-    const db = firebase.database();
-    console.log(db);
+    const database = firebase.database();
+    console.log(database);
   }, []);
 
   return (

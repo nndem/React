@@ -1,4 +1,4 @@
-// Компонент Регистрации Developers
+//СОЗДАНИЕ УЧЕТНОЙ ЗАПИСИ COMPANY И ПЕРЕХОД НА СТРАНИЦУ HOME
 
 import React from 'react';
 
@@ -16,34 +16,63 @@ import {useFormik} from 'formik';
 export default function SignUpForCompany() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const userType = useSelector((store) => store.session.userType);
+  const userType = useSelector((rootStore) => rootStore.session.userType);
 
-  //СОЗДАНИЕ УЧЕТНОЙ ЗАПИСИ И ПЕРЕХОД НА СТРАНИЦУ HOME
-  const createAccount = async (e) => {
-    //e.preventDefault(); //
+  const createAccount = async () => {
     try {
-      await firebase.auth().createUserWithEmailAndPassword(values.email, values.password); //использовать другой метод с большими данными
-      saveEmailAndPasswordAndUserTypeToStore(values.email, values.password);
-      loadPage();
+      const newCompanyObj = {
+        id: new Date().getUTCMilliseconds(),
+        userType: 'company',
+        email: values.email,
+        password: values.password,
+        companyName: values.companyName,
+      };
+      await writeCompanyDataToServer(newCompanyObj);
+      let data = await readCompanyDataFromServer(newCompanyObj);
+      await saveDataToStore(data);
+      await loadPage();
     } catch (error) {
       console.error(error);
     }
   };
 
-  const saveEmailAndPasswordAndUserTypeToStore = (email, password) => {
-    if (userType === 'company') {
-      saveCompanyEmailAndUserTypePassword(email, password);
-    }
+  const writeCompanyDataToServer = async (companyObj) => {
+    console.log('write new object to server...');
+    await firebase
+      .database()
+      .ref('companies/' + companyObj.id)
+      .set({
+        id: companyObj.id,
+        userType: companyObj.userType,
+        email: companyObj.email,
+        password: companyObj.password,
+        companyName: companyObj.companyName,
+      });
   };
-  const saveCompanyEmailAndUserTypePassword = (email, password) => {
+
+  const readCompanyDataFromServer = async (newCompanyObj) => {
+    let data = {};
+    firebase
+      .database()
+      .ref('companies/' + newCompanyObj.id)
+      .on('value', (snap) => {
+        data = snap.val();
+      });
+    return data;
+  };
+
+  const saveDataToStore = (obj) => {
     batch(() => {
-      dispatch(setCompanyEmail(email));
-      dispatch(setCompanyPassword(password));
-      dispatch(setUserType('company'));
+      dispatch(setCompanyEmail(obj.email));
+      dispatch(setCompanyPassword(obj.password));
+      dispatch(setCompanyName(obj.companyName));
+      dispatch(setUserType(userType));
     });
   };
-  const loadPage = () => {
-    dispatch(logIn()); //устанавливаем сессию
+
+  const loadPage = async () => {
+    console.log('LOADING PAGE...');
+    dispatch(logIn());
     history.push('/home');
   };
 
