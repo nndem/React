@@ -2,59 +2,74 @@
 
 import React from 'react';
 import {useHistory} from 'react-router-dom';
-
-import {Button, TextField, RadioGroup, FormControlLabel, Radio} from '@material-ui/core';
-
+import {Button, TextField} from '@material-ui/core';
 import classes from './LogIn.module.css';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import firebase from 'firebase';
-import {logIn, setUserType} from '../../store/sessionStore';
+import {logIn, logInProcessFailed, logInProcessStart, logInProcessSucceed} from '../../store/session/actions';
 import {useFormik} from 'formik';
-import {setDeveloperEmail, setDeveloperPassword} from '../../store/developer/actions';
-import {setCompanyEmail, setCompanyPassword} from '../../store/company/actions';
 
 export default function LogIn() {
-  const history = useHistory(); // хук для перехода на другую страницу
+  const history = useHistory();
   const dispatch = useDispatch();
+  const isLoading = useSelector((rootStore) => rootStore.session.isLoading);
 
-  //Firebase
-  const SignIn = async (e) => {
-    //e.preventDefault();
+  const SignIn = async () => {
+    dispatch(logInProcessStart());
+
     try {
-      console.log('LOGIN:', values.email, 'PASSWORD:', values.password);
-      await firebase.auth().signInWithEmailAndPassword(values.email, values.password);
-      //записать данные в store
-      saveEmailAndPasswordToStore(values.email, values.password);
+      const authUserCredits = await signInOnFirebase(values.email, values.password);
+      const userId = authUserCredits.user.uid;
 
-      dispatch(logIn()); //устанавливаем сессию
+      const user2 = await getUserFromFirebase(userId);
 
-      history.push('/home');
+      console.log('user2:', user2);
+
+      //await writeDataToLocalStorage(userInfoFromFirebase);
+
+      //dispatch(logInProcessSucceed(userInfoFromFirebase));
     } catch (error) {
-      console.error(error);
+      //dispatch(logInProcessFailed(error));
     }
   };
 
-  const userType = useSelector((rootStore) => rootStore.session.userType);
-  const saveEmailAndPasswordToStore = (email, password) => {
+  const getUserFromFirebase = async (id) => {
+    let data = {};
+    await firebase
+      .database()
+      .ref('users/' + id)
+      .once('value', (snap) => {
+        data = snap.val();
+      });
+    return data;
+  };
+
+  const signInOnFirebase = async (email, password) => {
+    return await firebase.auth().signInWithEmailAndPassword(email, password);
+  };
+
+  const writeDataToLocalStorage = async (obj) => {
+    await localStorage.setItem('CurrentObj', JSON.stringify(obj));
+    const data = JSON.parse(localStorage.getItem('CurrentObj'));
+    return data;
+  };
+
+  const loadPage = (userType) => {
+    dispatch(logIn()); //устанавливаем сессию
+    const path = homePage(userType);
+    history.push(path);
+  };
+
+  const homePage = (userType) => {
+    let path;
     if (userType === 'developer') {
-      saveDeveloperEmailAndPassword(email, password);
+      path = '/infofordevelopers';
     } else if (userType === 'company') {
-      saveCompanyEmailAndPassword(email, password);
+      path = '/infoforcompanies';
+    } else {
+      path = '';
     }
-  };
-
-  const saveDeveloperEmailAndPassword = (email, password) => {
-    batch(() => {
-      dispatch(setDeveloperEmail(email));
-      dispatch(setDeveloperPassword(password));
-    });
-  };
-
-  const saveCompanyEmailAndPassword = (email, password) => {
-    batch(() => {
-      dispatch(setCompanyEmail(email));
-      dispatch(setCompanyPassword(password));
-    });
+    return path;
   };
 
   // Использование Formik
@@ -63,15 +78,21 @@ export default function LogIn() {
       email: '',
       password: '',
     },
-    onSubmit: async () => {
-      await SignIn();
+    onSubmit: async (userType) => {
+      try {
+        await SignIn();
+        //await loadPage(userType);
+      } catch (error) {
+        console.error(error);
+      }
     },
   });
-
+  if (isLoading) {
+    return <> Loading...</>;
+  }
   return (
     <form onSubmit={handleSubmit}>
       <TextField
-        //inputProps={}
         onChange={handleChange}
         variant="outlined"
         margin="normal"
@@ -85,7 +106,6 @@ export default function LogIn() {
       />
 
       <TextField
-        //inputProps={}
         onChange={handleChange}
         variant="outlined"
         margin="normal"

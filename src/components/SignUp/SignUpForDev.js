@@ -15,39 +15,43 @@ import {
   setDeveloperSurname,
   setDeveloperExperience,
 } from '../../store/developer/actions';
-import {logIn, setUserType} from '../../store/sessionStore';
+import {logIn, setUserType} from '../../store/session/actions';
 import {useFormik} from 'formik';
 
 export default function SignUpForDev() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const userType = useSelector((rootStore) => rootStore.session.userType);
 
   const createAccount = async () => {
+    const newDevObj = {
+      id: new Date().getUTCMilliseconds(),
+      userType: 'developer',
+      email: values.email,
+      password: values.password,
+      name: values.name,
+      surname: values.surname,
+      stack: values.stack,
+      experience: values.experience,
+    };
+
     try {
-      const newDevObj = {
-        id: new Date().getUTCMilliseconds(),
-        userType: 'developer',
-        email: values.email,
-        password: values.password,
-        name: values.name,
-        surname: values.surname,
-        stack: values.stack,
-        experience: values.experience,
-      };
-      await writeDeveloperData(newDevObj);
-      let data = await readDevDataFromServer(newDevObj);
-      await saveDataToStore(data);
-      loadPage();
+      await registerOnServer(values.email, values.password);
+      await writeDeveloperDataToServer(newDevObj);
+      const data = await writeDataToLocalStorage(newDevObj);
+      await dispatchDataToStore(data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const writeDeveloperData = async (DevObj) => {
+  const registerOnServer = async (email, password) => {
+    await firebase.auth().createUserWithEmailAndPassword(email, password);
+  };
+
+  const writeDeveloperDataToServer = async (DevObj) => {
     await firebase
       .database()
-      .ref('developers/' + DevObj.id)
+      .ref('users/' + DevObj.id)
       .set({
         id: DevObj.id,
         userType: DevObj.userType,
@@ -60,18 +64,13 @@ export default function SignUpForDev() {
       });
   };
 
-  const readDevDataFromServer = async (newDevObj) => {
-    let data = {};
-    firebase
-      .database()
-      .ref('developers/' + newDevObj.id)
-      .on('value', (snap) => {
-        data = snap.val();
-      });
+  const writeDataToLocalStorage = async (obj) => {
+    await localStorage.setItem('newDevObj', JSON.stringify(obj));
+    const data = JSON.parse(localStorage.getItem('newDevObj'));
     return data;
   };
 
-  const saveDataToStore = (obj) => {
+  const dispatchDataToStore = (obj) => {
     batch(() => {
       dispatch(setDeveloperEmail(obj.email));
       dispatch(setDeveloperPassword(obj.password));
@@ -79,14 +78,14 @@ export default function SignUpForDev() {
       dispatch(setDeveloperSurname(obj.surname));
       dispatch(setDeveloperStack(obj.stack));
       dispatch(setDeveloperExperience(obj.experience));
-      dispatch(setUserType(userType));
+      dispatch(setUserType(obj.userType));
+      dispatch(logIn());
     });
   };
 
   const loadPage = () => {
     console.log('LOADING PAGE...');
-    dispatch(logIn());
-    history.push('/home');
+    history.push('/infofordevelopers');
   };
 
   const {handleSubmit, handleChange, values} = useFormik({
@@ -100,6 +99,7 @@ export default function SignUpForDev() {
     },
     onSubmit: async () => {
       await createAccount();
+      await loadPage();
     },
   });
 

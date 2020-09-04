@@ -1,7 +1,7 @@
 import companyReducer from './company';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
 import developerReducer from './developer';
-import sessionReducer from './sessionStore';
+import sessionReducer from './session';
 
 import {logger} from 'redux-logger';
 

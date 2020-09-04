@@ -5,8 +5,6 @@ import LogIn from './components/LogIn/LogIn';
 import SignUp from './components/SignUp/SignUp';
 import {BrowserRouter} from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
-import Home from './components/Home/Home';
-
 import StartingPage from './components/StartingPage/StartingPage';
 import Container from '@material-ui/core/Container/Container';
 
@@ -17,6 +15,8 @@ import 'firebase/storage';
 import 'firebase/messaging';
 import {Provider} from 'react-redux';
 import initStore from './store';
+import InfoForDevelopers from './components/Home/InfoForDevelopers/InfoForDevelopers';
+import InfoForCompanies from './components/Home/InfoForCompanies/InfoForCompanies';
 
 const App = () => {
   const store = initStore();
@@ -34,9 +34,11 @@ const App = () => {
 
           <Container maxWidth="lg">
             <Route path="/login" component={LogIn} />
-            <Route path="/home" component={Home} />
             <Route path="/signup" component={SignUp} />
             <Route exact path="/" component={StartingPage} />
+
+            <Route path="/infofordevelopers" component={InfoForDevelopers} />
+            <Route path="/infoforcompanies" component={InfoForCompanies} />
           </Container>
         </div>
       </BrowserRouter>

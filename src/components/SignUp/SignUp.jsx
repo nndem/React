@@ -5,7 +5,7 @@ import SignUpForDev from './SignUpForDev';
 import classes from './SignUp.module.css';
 import {FormControlLabel, FormLabel, Radio, RadioGroup} from '@material-ui/core';
 import {useDispatch, useSelector} from 'react-redux';
-import {setUserType} from '../../store/sessionStore';
+import {setUserType} from '../../store/session/actions';
 
 export default function SignUp() {
   const userType = useSelector((rootStore) => rootStore.session.userType); // что-то не сходится
@@ -18,7 +18,10 @@ export default function SignUp() {
         <RadioGroup
           defaultValue="developer"
           required="required"
-          onChange={(e) => dispatch(setUserType(e.target.value))}
+          onChange={(e) =>
+            //добавить localStorage
+            dispatch(setUserType(e.target.value))
+          }
         >
           <FormControlLabel value="developer" control={<Radio />} label="Developer" />
           <FormControlLabel value="company" control={<Radio />} label="Company" />

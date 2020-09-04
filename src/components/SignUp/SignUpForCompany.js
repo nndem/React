@@ -1,79 +1,72 @@
 //СОЗДАНИЕ УЧЕТНОЙ ЗАПИСИ COMPANY И ПЕРЕХОД НА СТРАНИЦУ HOME
 
 import React from 'react';
-
 import {Button, TextField, Typography} from '@material-ui/core';
-
 import classes from './SignUp.module.css';
-
 import firebase from 'firebase';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {useHistory} from 'react-router-dom';
 import {setCompanyName, setCompanyEmail, setCompanyPassword} from '../../store/company/actions';
-import {logIn, setUserType} from '../../store/sessionStore';
+import {logIn, setUserType} from '../../store/session/actions';
 import {useFormik} from 'formik';
 
 export default function SignUpForCompany() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const userType = useSelector((rootStore) => rootStore.session.userType);
 
   const createAccount = async () => {
     try {
-      const newCompanyObj = {
-        id: new Date().getUTCMilliseconds(),
+      await registerOnServer(values.email, values.password);
+      const authUser = firebase.auth().currentUser;
+      console.log('authUser:', authUser);
+
+      const companyModel = {
+        id: authUser.uid,
         userType: 'company',
         email: values.email,
-        password: values.password,
         companyName: values.companyName,
       };
-      await writeCompanyDataToServer(newCompanyObj);
-      let data = await readCompanyDataFromServer(newCompanyObj);
-      await saveDataToStore(data);
-      await loadPage();
+
+      // create entity in real-time database
+      await writeCompanyDataToServer(companyModel);
+
+      const data = await writeDataToLocalStorage(companyModel); //putEntityToLocalStorage
+      await dispatchDataToStore(data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const writeCompanyDataToServer = async (companyObj) => {
-    console.log('write new object to server...');
-    await firebase
-      .database()
-      .ref('companies/' + companyObj.id)
-      .set({
-        id: companyObj.id,
-        userType: companyObj.userType,
-        email: companyObj.email,
-        password: companyObj.password,
-        companyName: companyObj.companyName,
-      });
+  const registerOnServer = async (email, password) => {
+    await firebase.auth().createUserWithEmailAndPassword(email, password);
   };
 
-  const readCompanyDataFromServer = async (newCompanyObj) => {
-    let data = {};
-    firebase
+  const writeCompanyDataToServer = async (companyModel) => {
+    await firebase
       .database()
-      .ref('companies/' + newCompanyObj.id)
-      .on('value', (snap) => {
-        data = snap.val();
-      });
+      .ref('users/' + companyModel.id)
+      .set({...companyModel});
+  };
+
+  const writeDataToLocalStorage = async (obj) => {
+    await localStorage.setItem('newCompanyObj', JSON.stringify(obj));
+    const data = JSON.parse(localStorage.getItem('newCompanyObj'));
     return data;
   };
 
-  const saveDataToStore = (obj) => {
+  const dispatchDataToStore = (obj) => {
     batch(() => {
       dispatch(setCompanyEmail(obj.email));
       dispatch(setCompanyPassword(obj.password));
       dispatch(setCompanyName(obj.companyName));
-      dispatch(setUserType(userType));
+      dispatch(setUserType(obj.userType));
+      dispatch(logIn());
     });
   };
 
-  const loadPage = async () => {
+  const loadPage = () => {
     console.log('LOADING PAGE...');
-    dispatch(logIn());
-    history.push('/home');
+    history.push('/infoforcompanies');
   };
 
   const {handleSubmit, handleChange, values} = useFormik({
@@ -83,7 +76,12 @@ export default function SignUpForCompany() {
       companyName: '',
     },
     onSubmit: async () => {
-      await createAccount();
+      try {
+        await createAccount();
+        await loadPage();
+      } catch (error) {
+        console.error(error);
+      }
     },
   });
 

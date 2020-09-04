@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Grid} from '@material-ui/core';
 import {useDispatch} from 'react-redux';
 import {useHistory} from 'react-router';
-import {LogOut} from '../../store/sessionStore';
+import {LogOut} from '../../store/session/actions';
 
 {
   /*логика будет такая:
