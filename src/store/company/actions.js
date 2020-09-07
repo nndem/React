@@ -1,7 +1,7 @@
 import types from './types';
 
 export const setCompanyPassword = (password) => {
-  console.log('dispatching SET_PASSWORD');
+  console.log('dispatching SET_COMPANY_PASSWORD');
   return {
     type: types.SET_COMPANY_PASSWORD,
     payload: password,
@@ -9,7 +9,7 @@ export const setCompanyPassword = (password) => {
 };
 
 export const setCompanyEmail = (email) => {
-  console.log('dispatching SET_EMAIL');
+  console.log('dispatching SET_COMPANY_EMAIL');
   return {
     type: types.SET_COMPANY_EMAIL,
     payload: email,

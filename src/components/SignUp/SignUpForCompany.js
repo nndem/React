@@ -4,10 +4,9 @@ import React from 'react';
 import {Button, TextField, Typography} from '@material-ui/core';
 import classes from './SignUp.module.css';
 import firebase from 'firebase';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useHistory} from 'react-router-dom';
-import {setCompanyName, setCompanyEmail, setCompanyPassword} from '../../store/company/actions';
-import {logIn, setUserType} from '../../store/session/actions';
+import {logInProcessFailed, logInProcessSucceed, setUserType} from '../../store/session/actions';
 import {useFormik} from 'formik';
 
 export default function SignUpForCompany() {
@@ -27,12 +26,12 @@ export default function SignUpForCompany() {
         companyName: values.companyName,
       };
 
-      // create entity in real-time database
-      await writeCompanyDataToServer(companyModel);
+      await createEntityInRealTimeDataBase(companyModel);
 
-      const data = await writeDataToLocalStorage(companyModel); //putEntityToLocalStorage
-      await dispatchDataToStore(data);
+      const entity = await putEntityToLocalStorage(companyModel);
+      dispatch(logInProcessSucceed(entity));
     } catch (error) {
+      dispatch(logInProcessFailed(error.message));
       console.error(error);
     }
   };
@@ -41,31 +40,21 @@ export default function SignUpForCompany() {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
   };
 
-  const writeCompanyDataToServer = async (companyModel) => {
+  const createEntityInRealTimeDataBase = async (companyModel) => {
     await firebase
       .database()
       .ref('users/' + companyModel.id)
       .set({...companyModel});
   };
 
-  const writeDataToLocalStorage = async (obj) => {
-    await localStorage.setItem('newCompanyObj', JSON.stringify(obj));
-    const data = JSON.parse(localStorage.getItem('newCompanyObj'));
+  const putEntityToLocalStorage = async (obj) => {
+    await localStorage.setItem('Entity', JSON.stringify(obj));
+    const data = JSON.parse(localStorage.getItem('Entity'));
     return data;
   };
 
-  const dispatchDataToStore = (obj) => {
-    batch(() => {
-      dispatch(setCompanyEmail(obj.email));
-      dispatch(setCompanyPassword(obj.password));
-      dispatch(setCompanyName(obj.companyName));
-      dispatch(setUserType(obj.userType));
-      dispatch(logIn());
-    });
-  };
-
   const loadPage = () => {
-    console.log('LOADING PAGE...');
+    console.log('REFERRING...');
     history.push('/infoforcompanies');
   };
 

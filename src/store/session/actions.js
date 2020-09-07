@@ -28,7 +28,6 @@ export const logInProcessFailed = (error) => {
 };
 
 export const logIn = () => {
-  //добавить еще инфй
   return {
     type: types.LOG_IN,
   };

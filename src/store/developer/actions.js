@@ -1,6 +1,7 @@
 import types from './types';
 
 export const setDeveloperPassword = (password) => {
+  console.log('dispatching SET_DEVELOPER_PASSWORD');
   return {
     type: types.SET_DEVELOPER_PASSWORD,
     payload: password,
@@ -8,6 +9,7 @@ export const setDeveloperPassword = (password) => {
 };
 
 export const setDeveloperEmail = (email) => {
+  console.log('dispatching SET_DEVELOPER_EMAIL');
   return {
     type: types.SET_DEVELOPER_EMAIL,
     payload: email,
@@ -15,6 +17,7 @@ export const setDeveloperEmail = (email) => {
 };
 
 export const setDeveloperName = (name) => {
+  console.log('dispatching SET_DEVELOPER_NAME');
   return {
     type: types.SET_DEVELOPER_NAME,
     payload: name,
@@ -22,6 +25,7 @@ export const setDeveloperName = (name) => {
 };
 
 export const setDeveloperSurname = (surname) => {
+  console.log('dispatching SET_DEVELOPER_SURNAME');
   return {
     type: types.SET_DEVELOPER_SURNAME,
     payload: surname,
@@ -29,6 +33,7 @@ export const setDeveloperSurname = (surname) => {
 };
 
 export const setDeveloperStack = (stack) => {
+  console.log('dispatching SET_DEVELOPER_STACK');
   return {
     type: types.SET_DEVELOPER_STACK,
     payload: stack,
@@ -36,6 +41,7 @@ export const setDeveloperStack = (stack) => {
 };
 
 export const setDeveloperExperience = (experience) => {
+  console.log('dispatching SET_DEVELOPER_EXPERIENCE');
   return {
     type: types.SET_DEVELOPER_EXPERIENCE,
     payload: experience,

@@ -15,7 +15,7 @@ import {
   setDeveloperSurname,
   setDeveloperExperience,
 } from '../../store/developer/actions';
-import {logIn, setUserType} from '../../store/session/actions';
+import {logInProcessFailed, logInProcessStart, logInProcessSucceed, setUserType} from '../../store/session/actions';
 import {useFormik} from 'formik';
 
 export default function SignUpForDev() {
@@ -23,23 +23,29 @@ export default function SignUpForDev() {
   const history = useHistory();
 
   const createAccount = async () => {
-    const newDevObj = {
-      id: new Date().getUTCMilliseconds(),
-      userType: 'developer',
-      email: values.email,
-      password: values.password,
-      name: values.name,
-      surname: values.surname,
-      stack: values.stack,
-      experience: values.experience,
-    };
-
     try {
+      dispatch(logInProcessStart());
       await registerOnServer(values.email, values.password);
-      await writeDeveloperDataToServer(newDevObj);
-      const data = await writeDataToLocalStorage(newDevObj);
-      await dispatchDataToStore(data);
+      const authUser = firebase.auth().currentUser;
+      console.log('authUser:', authUser);
+
+      const developerModel = {
+        id: authUser.uid,
+        userType: 'developer',
+        email: values.email,
+        password: values.password,
+        name: values.name,
+        surname: values.surname,
+        stack: values.stack,
+        experience: values.experience,
+      };
+
+      await createEntityInRealTimeDataBase(developerModel);
+
+      const entity = await putEntityToLocalStorage(developerModel);
+      dispatch(logInProcessSucceed(entity));
     } catch (error) {
+      dispatch(logInProcessFailed(error.message));
       console.error(error);
     }
   };
@@ -48,43 +54,21 @@ export default function SignUpForDev() {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
   };
 
-  const writeDeveloperDataToServer = async (DevObj) => {
+  const createEntityInRealTimeDataBase = async (developerModel) => {
     await firebase
       .database()
-      .ref('users/' + DevObj.id)
-      .set({
-        id: DevObj.id,
-        userType: DevObj.userType,
-        email: DevObj.email,
-        password: DevObj.password,
-        name: DevObj.name,
-        surname: DevObj.surname,
-        stack: DevObj.stack,
-        experience: DevObj.experience,
-      });
+      .ref('users/' + developerModel.id)
+      .set({...developerModel});
   };
 
-  const writeDataToLocalStorage = async (obj) => {
-    await localStorage.setItem('newDevObj', JSON.stringify(obj));
-    const data = JSON.parse(localStorage.getItem('newDevObj'));
+  const putEntityToLocalStorage = async (obj) => {
+    await localStorage.setItem('Entity', JSON.stringify(obj));
+    const data = JSON.parse(localStorage.getItem('Entity'));
     return data;
   };
 
-  const dispatchDataToStore = (obj) => {
-    batch(() => {
-      dispatch(setDeveloperEmail(obj.email));
-      dispatch(setDeveloperPassword(obj.password));
-      dispatch(setDeveloperName(obj.name));
-      dispatch(setDeveloperSurname(obj.surname));
-      dispatch(setDeveloperStack(obj.stack));
-      dispatch(setDeveloperExperience(obj.experience));
-      dispatch(setUserType(obj.userType));
-      dispatch(logIn());
-    });
-  };
-
   const loadPage = () => {
-    console.log('LOADING PAGE...');
+    console.log('REFERRING...');
     history.push('/infofordevelopers');
   };
 

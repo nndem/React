@@ -1,6 +1,6 @@
 // Страница LogIn
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useHistory} from 'react-router-dom';
 import {Button, TextField} from '@material-ui/core';
 import classes from './LogIn.module.css';
@@ -12,50 +12,26 @@ import {useFormik} from 'formik';
 export default function LogIn() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const isLoading = useSelector((rootStore) => rootStore.session.isLoading);
+  const {isLoading, isAuth, userType} = useSelector((rootStore) => {
+    // подписал компонент на изменения stora
+    return {
+      isAuth: rootStore.session.isAuth,
+      isLoading: rootStore.session.isLoading,
+      userType: rootStore.session.authUser?.userType, //syntax sugar
+    };
+  });
 
-  const SignIn = async () => {
-    dispatch(logInProcessStart());
+  //const userType = useSelector((rootStore) => rootStore.session.userType);
 
-    try {
-      const authUserCredits = await signInOnFirebase(values.email, values.password);
-      const userId = authUserCredits.user.uid;
-
-      const user2 = await getUserFromFirebase(userId);
-
-      console.log('user2:', user2);
-
-      //await writeDataToLocalStorage(userInfoFromFirebase);
-
-      //dispatch(logInProcessSucceed(userInfoFromFirebase));
-    } catch (error) {
-      //dispatch(logInProcessFailed(error));
+  useEffect(() => {
+    console.log(isAuth, userType);
+    if (isAuth && userType) {
+      loadPage(userType);
     }
-  };
-
-  const getUserFromFirebase = async (id) => {
-    let data = {};
-    await firebase
-      .database()
-      .ref('users/' + id)
-      .once('value', (snap) => {
-        data = snap.val();
-      });
-    return data;
-  };
-
-  const signInOnFirebase = async (email, password) => {
-    return await firebase.auth().signInWithEmailAndPassword(email, password);
-  };
-
-  const writeDataToLocalStorage = async (obj) => {
-    await localStorage.setItem('CurrentObj', JSON.stringify(obj));
-    const data = JSON.parse(localStorage.getItem('CurrentObj'));
-    return data;
-  };
+  }, [isAuth, userType]); //функция срабатывает при изменении isAuth, т.е. функция зависит от свойства isAuth
 
   const loadPage = (userType) => {
-    dispatch(logIn()); //устанавливаем сессию
+    //dispatch(logIn());
     const path = homePage(userType);
     history.push(path);
   };
@@ -70,6 +46,48 @@ export default function LogIn() {
       path = '';
     }
     return path;
+  };
+
+  const SignIn = async () => {
+    dispatch(logInProcessStart());
+
+    try {
+      const authUserCredits = await signInOnFirebase(values.email, values.password);
+      const userId = authUserCredits.user.uid;
+
+      const entity = await getEntityFromFirebase(userId);
+
+      console.log('entity:', entity);
+
+      await putEntityToLocalStorage(entity);
+
+      dispatch(logInProcessSucceed(entity));
+    } catch (error) {
+      dispatch(logInProcessFailed(error.message));
+    }
+  };
+
+  const getEntityFromFirebase = async (id) => {
+    let data = {};
+    await firebase
+      .database()
+      .ref('users/' + id)
+      .once('value', (snap) => {
+        console.log('path to get is:', id);
+        console.log('snap.val:', snap.val());
+        data = snap.val();
+      });
+    return data;
+  };
+
+  const signInOnFirebase = async (email, password) => {
+    return await firebase.auth().signInWithEmailAndPassword(email, password);
+  };
+
+  const putEntityToLocalStorage = async (obj) => {
+    await localStorage.setItem('Entity', JSON.stringify(obj));
+    const entity = JSON.parse(localStorage.getItem('Entity'));
+    return entity;
   };
 
   // Использование Formik

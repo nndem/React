@@ -1,7 +1,7 @@
 import companyReducer from './company';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
 import developerReducer from './developer';
-import sessionReducer from './session';
+import sessionReducer, {setup as sessionSetup} from './session';
 
 import {logger} from 'redux-logger';
 
@@ -13,5 +13,7 @@ export default function initStore() {
     session: sessionReducer,
   });
   const store = createStore(reducers, {}, applyMiddleware(...middlewares));
+  sessionSetup(store);
+
   return store;
 }

@@ -6,7 +6,6 @@ import {LogOut} from '../../store/session/actions';
 
 const Nav = () => {
   const isAuth = useSelector((rootStore) => rootStore.session.isAuth);
-  //const userType = useSelector((rootStore) => rootStore.session.userType);
   const dispatch = useDispatch();
 
   return (
@@ -47,6 +46,13 @@ const Nav = () => {
         {isAuth ? (
           <NavLink to="/infoforcompanies" activeClassName={classes.activeLink}>
             Список разработчиков
+          </NavLink>
+        ) : (
+          ''
+        )}
+        {isAuth ? (
+          <NavLink to="/profile" activeClassName={classes.activeLink}>
+            Мой профиль )
           </NavLink>
         ) : (
           ''
