@@ -21,10 +21,8 @@ export default function LogIn() {
     };
   });
 
-  //const userType = useSelector((rootStore) => rootStore.session.userType);
-
   useEffect(() => {
-    console.log(isAuth, userType);
+    console.log('useEffect сработал: isAuth и userType теперь равны:', isAuth, userType);
     if (isAuth && userType) {
       loadPage(userType);
     }
