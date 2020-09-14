@@ -25,7 +25,7 @@ export const sessionReducer = (state = initialState, action) => {
       return {...state, isAuth: true};
 
     case types.LOG_OUT:
-      return {...state, isAuth: false};
+      return {...state, isAuth: false, authUser: null};
 
     default:
       return state;

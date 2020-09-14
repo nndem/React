@@ -47,3 +47,11 @@ export const setDeveloperExperience = (experience) => {
     payload: experience,
   };
 };
+
+export const setDeveloperDescription = (description) => {
+  console.log('dispatching SET_DEVELOPER_Description');
+  return {
+    type: types.SET_DEVELOPER_DESCRIPTION,
+    payload: description,
+  };
+};

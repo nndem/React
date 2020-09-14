@@ -3,6 +3,7 @@ import classes from './Navbar.module.css';
 import {NavLink} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {LogOut} from '../../store/session/actions';
+import firebase from 'firebase';
 
 const Nav = () => {
   const isAuth = useSelector((rootStore) => rootStore.session.isAuth);
@@ -21,6 +22,11 @@ const Nav = () => {
             activeClassName={classes.activeLink}
             onClick={() => {
               dispatch(LogOut());
+              firebase
+                .auth()
+                .signOut()
+                .then(() => console.log('STOP FIREBASE SESSION'))
+                .catch(() => console.log('STOP FIREBASE SESSION ERROR'));
             }}
           >
             Выйти

@@ -6,12 +6,13 @@ import {useDispatch} from 'react-redux';
 export const AuthUserContext = createContext({authUser: null}); //создаем  контекст  [AuthUserContext.Provider, AuthUserContext.Consumer]
 
 const AuthUserProvider = ({children}) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [authUser, setAuthUser] = useState(null);
 
   const dispatch = useDispatch();
 
   const fetchAndDispatchEntityFromFireBase = useCallback(async (id) => {
+    setIsLoading(true);
     let userData = {};
     await firebase
       .database()
@@ -21,13 +22,15 @@ const AuthUserProvider = ({children}) => {
         userData = snap.val();
       });
     setAuthUser(userData);
-    setIsLoading(false);
     dispatch(logInProcessSucceed(userData));
+    setIsLoading(false);
+    console.log('GET USER FROM FIREBASE');
   }, []);
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged((fbAuthUser) => {
-      if (fbAuthUser.uid && !fbAuthUser.isAnonymous) {
+      console.log('fbAuthUser:', fbAuthUser);
+      if (fbAuthUser && fbAuthUser.uid && !fbAuthUser.isAnonymous) {
         fetchAndDispatchEntityFromFireBase(fbAuthUser.uid);
       }
     });

@@ -12,6 +12,7 @@ const constantProjects = [
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Google',
     logo: google,
+    userType: 'company',
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ const constantProjects = [
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Google',
     logo: google,
+    userType: 'company',
   },
   {
     id: 3,
@@ -32,6 +34,7 @@ const constantProjects = [
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Google',
     logo: google,
+    userType: 'company',
   },
   {
     id: 4,
@@ -42,6 +45,7 @@ const constantProjects = [
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Yandex',
     logo: yandex,
+    userType: 'company',
   },
   {
     id: 5,
@@ -52,6 +56,7 @@ const constantProjects = [
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Yandex',
     logo: yandex,
+    userType: 'company',
   },
   {
     id: 6,
@@ -62,6 +67,7 @@ const constantProjects = [
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Yandex',
     logo: yandex,
+    userType: 'company',
   },
   {
     id: 7,
@@ -72,6 +78,7 @@ const constantProjects = [
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Mail',
     logo: mail,
+    userType: 'company',
   },
   {
     id: 8,
@@ -82,6 +89,7 @@ const constantProjects = [
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Mail',
     logo: mail,
+    userType: 'company',
   },
   {
     id: 9,
@@ -92,6 +100,7 @@ const constantProjects = [
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Mail',
     logo: mail,
+    userType: 'company',
   },
 ];
 

@@ -9,6 +9,7 @@ const constantDevelopers = [
       'I am Vasy. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
+    userType: 'developer',
   },
   {
     id: 2,
@@ -17,6 +18,7 @@ const constantDevelopers = [
     stack: ['javascript', 'python'],
     email: 'petka@mail.ru',
     description: 'Me como Petya',
+    userType: 'developer',
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ const constantDevelopers = [
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
+    userType: 'developer',
   },
   {
     id: 4,
@@ -36,6 +39,7 @@ const constantDevelopers = [
     stack: ['javascript', 'python'],
     email: 'pashok@mail.ru',
     description: 'Me como Pivo',
+    userType: 'developer',
   },
   {
     id: 5,
@@ -47,6 +51,7 @@ const constantDevelopers = [
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
+    userType: 'developer',
   },
   {
     id: 6,
@@ -55,6 +60,7 @@ const constantDevelopers = [
     stack: ['javascript', 'python'],
     description: 'This is Peter',
     email: 'kolyan@mail.ru',
+    userType: 'developer',
   },
   {
     id: 7,
@@ -66,6 +72,7 @@ const constantDevelopers = [
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
+    userType: 'developer',
   },
   {
     id: 8,
@@ -74,6 +81,7 @@ const constantDevelopers = [
     stack: ['React native', 'node js'],
     email: 'miha@mail.ru',
     description: 'My name is GAF',
+    userType: 'developer',
   },
 ];
 

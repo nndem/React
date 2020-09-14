@@ -25,6 +25,9 @@ export const developerReducer = (state = initialState, action) => {
     case types.SET_DEVELOPER_EXPERIENCE:
       return {...state, developerExperience: action.payload};
 
+    case types.SET_DEVELOPER_DESCRIPTION:
+      return {...state, developerDescription: action.payload};
+
     default:
       return state;
   }

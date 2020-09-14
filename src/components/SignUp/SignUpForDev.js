@@ -3,20 +3,22 @@
 import React from 'react';
 import firebase from 'firebase';
 import classes from './SignUp.module.css';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useHistory} from 'react-router';
 
-import {Button, TextField, Typography} from '@material-ui/core';
-import {
-  setDeveloperEmail,
-  setDeveloperName,
-  setDeveloperPassword,
-  setDeveloperStack,
-  setDeveloperSurname,
-  setDeveloperExperience,
-} from '../../store/developer/actions';
-import {logInProcessFailed, logInProcessStart, logInProcessSucceed, setUserType} from '../../store/session/actions';
+import {Button, TextField, OutlinedInput, Typography} from '@material-ui/core';
+
+import {logInProcessFailed, logInProcessStart, logInProcessSucceed} from '../../store/session/actions';
 import {useFormik} from 'formik';
+import * as Yup from 'yup';
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Required'),
+  surname: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Required'),
+  email: Yup.string().email('Invalid email').required('Required'),
+  stack: Yup.string().required('Required'),
+  experience: Yup.number().min(0, 'Too Short!').max(50, 'Too Long!').required('Please enter correct number'),
+});
 
 export default function SignUpForDev() {
   const dispatch = useDispatch();
@@ -38,6 +40,7 @@ export default function SignUpForDev() {
         surname: values.surname,
         stack: values.stack,
         experience: values.experience,
+        description: values.description,
       };
 
       await createEntityInRealTimeDataBase(developerModel);
@@ -69,10 +72,11 @@ export default function SignUpForDev() {
 
   const loadPage = () => {
     console.log('REFERRING...');
-    history.push('/infofordevelopers');
+    history.push('/profile');
+    //history.push('/infofordevelopers');
   };
 
-  const {handleSubmit, handleChange, values} = useFormik({
+  const {handleSubmit, handleChange, values, errors} = useFormik({
     initialValues: {
       email: '',
       password: '',
@@ -80,10 +84,14 @@ export default function SignUpForDev() {
       surname: '',
       stack: '',
       experience: '',
+      description: '',
     },
+
+    validationSchema,
+
     onSubmit: async () => {
       await createAccount();
-      await loadPage();
+      loadPage();
     },
   });
 
@@ -98,17 +106,18 @@ export default function SignUpForDev() {
           <TextField
             variant="outlined"
             margin="normal"
-            required
+            //required
             fullWidth
             id="email"
             label="Email Address"
             name="email"
-            type="email"
+            //type="email"
             autoComplete="email"
             autoFocus
             onChange={handleChange}
             value={values.email}
           />
+          {errors.email}
 
           <TextField
             variant="outlined"
@@ -127,7 +136,7 @@ export default function SignUpForDev() {
           <TextField
             variant="outlined"
             margin="normal"
-            required
+            //required
             fullWidth
             name="name"
             label="name"
@@ -135,11 +144,12 @@ export default function SignUpForDev() {
             onChange={handleChange}
             value={values.name}
           />
+          {errors.name}
 
           <TextField
             variant="outlined"
             margin="normal"
-            required
+            //required
             fullWidth
             name="surname"
             label="surname"
@@ -147,11 +157,12 @@ export default function SignUpForDev() {
             onChange={handleChange}
             value={values.surname}
           />
+          {errors.surname}
 
           <TextField
             variant="outlined"
             margin="normal"
-            required
+            //required
             fullWidth
             name="stack"
             label="stack"
@@ -159,11 +170,12 @@ export default function SignUpForDev() {
             onChange={handleChange}
             value={values.stack}
           />
+          {errors.stack}
 
           <TextField
             variant="outlined"
             margin="normal"
-            required
+            //required
             fullWidth
             name="experience"
             label="experience"
@@ -171,8 +183,21 @@ export default function SignUpForDev() {
             onChange={handleChange}
             value={values.experience}
           />
+          {errors.experience}
 
-          <Button type="submit" color="primary" variant="contained">
+          <TextField
+            variant="outlined"
+            margin="normal"
+            //required
+            fullWidth
+            name="description"
+            label="description"
+            id="description"
+            onChange={handleChange}
+            value={values.description}
+          />
+
+          <Button type="submit" color="primary" variant="contained" onInvalid={() => validationSchema}>
             Зарегистрировать
           </Button>
         </form>

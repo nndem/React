@@ -27,7 +27,7 @@ export default function SignUp() {
           <FormControlLabel value="company" control={<Radio />} label="Company" />
         </RadioGroup>
       </form>
-
+      {console.log('USERTYPE:', userType)}
       {userType !== null && (userType === 'company' ? <SignUpForCompany /> : <SignUpForDev />)}
     </>
   );
