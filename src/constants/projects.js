@@ -5,102 +5,120 @@ import mail from '../logos/mail.png';
 const constantProjects = [
   {
     id: 1,
-    projName: 'SkyJS',
+    projectName: 'SkyJS',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Google',
     logo: google,
-    userType: 'company',
+    userType: 'projects',
+    stack: 'PHP, JS',
+    deadlines: 5,
   },
   {
     id: 2,
-    projName: 'SkyNet',
+    projectName: 'SkyNet',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Google',
     logo: google,
-    userType: 'company',
+    userType: 'projects',
+    stack: 'PHP, JS',
+    deadlines: 5,
   },
   {
     id: 3,
-    projName: 'SkyWeb',
+    projectName: 'SkyWeb',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Google',
     logo: google,
-    userType: 'company',
+    userType: 'projects',
+    stack: 'PHP, JS',
+    deadlines: 5,
   },
   {
     id: 4,
-    projName: 'DevelopDigitalWorld',
+    projectName: 'DevelopDigitalWorld',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Yandex',
     logo: yandex,
-    userType: 'company',
+    userType: 'projects',
+    stack: 'PHP, JS',
+    deadlines: 5,
   },
   {
     id: 5,
-    projName: 'BuildDigitalWorld',
+    projectName: 'BuildDigitalWorld',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Yandex',
     logo: yandex,
-    userType: 'company',
+    userType: 'projects',
+    stack: 'PHP, JS',
+    deadlines: 5,
   },
   {
     id: 6,
-    projName: 'RaiseDigitalWorld',
+    projectName: 'RaiseDigitalWorld',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Yandex',
     logo: yandex,
-    userType: 'company',
+    userType: 'projects',
+    stack: 'PHP, JS',
+    deadlines: 5,
   },
   {
     id: 7,
-    projName: 'MakeWorldBetter',
+    projectName: 'MakeWorldBetter',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Mail',
     logo: mail,
-    userType: 'company',
+    userType: 'projects',
+    stack: 'PHP, JS',
+    deadlines: 5,
   },
   {
     id: 8,
-    projName: 'MakeThingsBetter',
+    projectName: 'MakeThingsBetter',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Mail',
     logo: mail,
-    userType: 'company',
+    userType: 'projects',
+    stack: 'PHP, JS',
+    deadlines: 5,
   },
   {
     id: 9,
-    projName: 'MakeRoutineBetter',
+    projectName: 'MakeRoutineBetter',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus pariatur possimus quis voluptas?\n' +
       '            Aperiam consectetur ducimus, hic iure magnam maxime nulla perspiciatis placeat, praesentium reiciendis\n' +
       '            repellat rerum sit veritatis, voluptates.',
     companyName: 'Mail',
     logo: mail,
-    userType: 'company',
+    userType: 'projects',
+    stack: 'PHP, JS',
+    deadlines: 5,
   },
 ];
 

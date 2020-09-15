@@ -53,12 +53,12 @@ export default function ProfileForCompany() {
   const getCompanyId = () => {
     //Todo: брать со stora
     console.log('companyId:', JSON.parse(localStorage.getItem('Entity')).id);
-    return JSON.parse(localStorage.getItem('Entity')).id; // Todo: JSON.parse
+    return JSON.parse(localStorage.getItem('Entity')).id;
   };
 
   const getCurrentCompanyProjects = (projectList, companyId) => {
     console.log('projectsListForFiltering:', projectList);
-    console.log('companyIdForfiltering:', companyId);
+    console.log('companyIdForFiltering:', companyId);
     return projectList.filter((element) => element.id_company === companyId) || console.log('No Current Projects');
   };
 
