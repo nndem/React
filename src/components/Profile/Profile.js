@@ -7,7 +7,6 @@ const Profile = () => {
   //const userType = useSelector((rootStore) => rootStore.session.authUser.userType);
   return (
     <>
-      {'heeloo'}
       <ProfileForCompany />
 
       {/*

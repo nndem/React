@@ -112,6 +112,7 @@ export default function SignUpForCompany() {
             onChange={handleChange}
             value={values.password}
           />
+
           <TextField
             variant="outlined"
             margin="normal"
