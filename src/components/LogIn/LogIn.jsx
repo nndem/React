@@ -22,7 +22,7 @@ export default function LogIn() {
   });
 
   useEffect(() => {
-    console.log('useEffect сработал: isAuth и userType теперь равны:', isAuth, userType);
+    //console.log('useEffect сработал: isAuth и userType теперь равны:', isAuth, userType);
     if (isAuth && userType) {
       loadPage(userType);
     }

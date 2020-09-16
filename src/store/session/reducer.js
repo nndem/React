@@ -1,7 +1,7 @@
 import types from './types';
 
 const initialState = {
-  authUser: null,
+  authUser: null, // authUser -  для пришедшей сущности. Нет.
   isAuth: false,
   isLoading: false,
   userType: 'developer',

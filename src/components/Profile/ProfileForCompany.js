@@ -29,6 +29,7 @@ export default function ProfileForCompany() {
     //  пока он всегда тянет актуальные данные
 
     if (!!!projectList) {
+      console.log('useEffect сработал.......');
       // если projectsList пустой,то выполнится. А он и так пустой, потому что его иници
       showProjects();
     }

@@ -21,12 +21,13 @@ const Nav = () => {
             to="/"
             activeClassName={classes.activeLink}
             onClick={() => {
-              dispatch(LogOut());
-              firebase
+              dispatch(LogOut()); //чистим store
+              firebase // выходим из БД
                 .auth()
                 .signOut()
                 .then(() => console.log('STOP FIREBASE SESSION'))
                 .catch(() => console.log('STOP FIREBASE SESSION ERROR'));
+              localStorage.clear(); // чистим localStorage
             }}
           >
             Выйти
