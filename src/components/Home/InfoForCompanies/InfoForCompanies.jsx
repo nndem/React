@@ -17,6 +17,8 @@ import constantDevelopers from '../../../constants/developers';
 export default function InfoForCompanies() {
   const [developers, setDeveloper] = useState([]);
   const isAuth = useSelector((rootStore) => rootStore.session.isAuth);
+  const userId = useSelector((rootStore) => rootStore.session.authUser?.id);
+  const userType = useSelector((rootStore) => rootStore.session.authUser?.userType);
 
   const getUsers = useCallback(async () => {
     return await getUserEntities('developer');
@@ -32,45 +34,72 @@ export default function InfoForCompanies() {
         setDeveloper(Object.values(res));
       });
     }
+    //excludeCurrentDeveloper();
   }, []);
 
   console.log('Full list of developers:', constantDevelopers);
   console.log('Full list of fetched developers:', developers);
   console.log('Merged', mergedDevelopers);
 
+  const excludeCurrentDeveloperById = () => {
+    // функция сработает для developer'а автоматически (и только для developer'а),
+    // т.к выборка просиходит по id, который уникальный у каждого Entity
+    // (т.е при userType = 'company' не сработает)
+
+    return getCurrentDeveloperId();
+  };
+
+  const getCurrentDeveloperId = () => {
+    console.log('userId to be excluded:', userId);
+    return userId;
+  };
+
   return (
     <>
       {isAuth ? (
         <Grid container spacing={2}>
           {mergedDevelopers.map((element, i) => {
-            /// тело
-            return (
-              <Grid key={i} item xs={3} spacing={3}>
-                <Card>
-                  <CardContent>
-                    <h1>
-                      <Typography>{element.name}</Typography>
-                    </h1>
-                    <Typography>Experience: {element.experience} year(s)</Typography>
-                    <Typography>Stack: {element.stack}</Typography>
-                    <Typography>Email: {element.email}</Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Grid container>
-                      <Grid item sm={12}>
-                        <Accordion>
-                          <AccordionSummary>About</AccordionSummary>
-                          <AccordionDetails>{element.description || element.about}</AccordionDetails>
-                        </Accordion>
+            /* console.log('userIDtobeExcluded:', excludeCurrentDeveloperById());*/
+            if (element.id !== excludeCurrentDeveloperById()) {
+              return (
+                <Grid key={i} item xs={3} spacing={3}>
+                  <Card>
+                    <CardContent>
+                      <h1>
+                        <Typography>{element.id}</Typography>
+                        <Typography>{element.name}</Typography>
+                      </h1>
+                      <Typography>Experience: {element.experience} year(s)</Typography>
+                      <Typography>Stack: {element.stack}</Typography>
+                      <Typography>Email: {element.email}</Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Grid container>
+                        <Grid item sm={12}>
+                          {userType === 'company' ? (
+                            <Accordion>
+                              <AccordionSummary>About</AccordionSummary>
+                              <AccordionDetails>{element.description || element.about}</AccordionDetails>
+                            </Accordion>
+                          ) : (
+                            ''
+                          )}
+                        </Grid>
+                        <Grid item sm={12}>
+                          {userType === 'company' ? (
+                            <Button variant="outlined" onClick={() => alert('Chat opened')}>
+                              Start chatting
+                            </Button>
+                          ) : (
+                            ''
+                          )}
+                        </Grid>
                       </Grid>
-                      <Grid item sm={12}>
-                        <Button variant="outlined">Start chatting</Button>
-                      </Grid>
-                    </Grid>
-                  </CardActions>
-                </Card>
-              </Grid>
-            );
+                    </CardActions>
+                  </Card>
+                </Grid>
+              );
+            }
           })}
         </Grid>
       ) : (

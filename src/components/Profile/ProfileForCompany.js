@@ -27,7 +27,7 @@ export default function ProfileForCompany() {
   useEffect(() => {
     // тянуть данные из stora, если их  нет то выполить запрос на сервер и записываю в store
     //  пока он всегда тянет актуальные данные
-
+    //showProjects();   //todo: автоматически обновлять
     if (!!!projectList) {
       console.log('useEffect сработал.......');
       // если projectsList пустой,то выполнится. А он и так пустой, потому что его иници
@@ -75,6 +75,11 @@ export default function ProfileForCompany() {
     setOpen(false);
   };
 
+  const handleCloseProj = () => {
+    //const companyOpenedProjects = showProjects();
+    alert('choose project to close'); //Todo: добавить функционал
+  };
+
   const createEntityInRealTimeDataBase = async () => {
     const projectModel = {
       id: firebase.auth().currentUser.uid + 'project' + new Date().getUTCMilliseconds(), //Todo: придумать что-либо получше
@@ -98,7 +103,7 @@ export default function ProfileForCompany() {
     }
   };
 
-  const {handleSubmit, values} = useFormik({
+  const {handleSubmit, handleChange, values} = useFormik({
     initialValues: {
       //companyName: '',
       projectName: '',
@@ -119,10 +124,11 @@ export default function ProfileForCompany() {
   return (
     <>
       {'Some information about company:\n' + JSON.parse(localStorage.getItem('Entity')).companyName}
+
       <ul>
         {'CURRENT COMPANY PROJECTS:'}
         {projectList?.map((el) => {
-          return <li>{el?.id || 'Your company has no any projects'}</li>;
+          return <li>{el?.projectName}</li>;
         })}
       </ul>
 
@@ -130,7 +136,10 @@ export default function ProfileForCompany() {
         Add new project
       </Button>
 
-      {/*<form onSubmit={handleSubmit}>*/}
+      <Button variant="outlined" color="primary" onClick={handleCloseProj}>
+        Close the project
+      </Button>
+
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">SOME_TEXT</DialogTitle>
         <DialogContent>
@@ -142,6 +151,7 @@ export default function ProfileForCompany() {
             id="projectName"
             label="projectName"
             fullWidth
+            onChange={handleChange}
             value={values.projectName}
           />
 
@@ -151,12 +161,29 @@ export default function ProfileForCompany() {
             id="description"
             label="description"
             fullWidth
+            onChange={handleChange}
             value={values.description}
           />
 
-          <TextField autoFocus margin="dense" id="deadlines" label="deadlines" fullWidth value={values.deadlines} />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="deadlines"
+            label="deadlines"
+            fullWidth
+            onChange={handleChange}
+            value={values.deadlines}
+          />
 
-          <TextField autoFocus margin="dense" id="stack" label="stack" fullWidth value={values.stack} />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="stack"
+            label="stack"
+            fullWidth
+            onChange={handleChange}
+            value={values.stack}
+          />
         </DialogContent>
 
         <DialogActions>
@@ -168,7 +195,6 @@ export default function ProfileForCompany() {
           </Button>
         </DialogActions>
       </Dialog>
-      {/*      </form>*/}
     </>
   );
 }

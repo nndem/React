@@ -45,7 +45,7 @@ const Nav = () => {
         </NavLink>
         {isAuth ? (
           <NavLink to="/infofordevelopers" activeClassName={classes.activeLink}>
-            Список проектов
+            Список открытых проектов
           </NavLink>
         ) : (
           ''

@@ -12,7 +12,7 @@ import {JoinProjectButton} from './JoinProjectButton';
 const InfoForDevelopers = () => {
   const [projects, setProjects] = useState([]);
   const isAuth = useSelector((rootStore) => rootStore.session.isAuth);
-  const userType = useSelector((rootStore) => rootStore.session.userType);
+  const userType = useSelector((rootStore) => rootStore.session.authUser?.userType);
 
   const getUsers = useCallback(async () => {
     return await getUserEntities('project');
