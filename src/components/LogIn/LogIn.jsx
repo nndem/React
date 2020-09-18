@@ -6,8 +6,15 @@ import {Button, TextField} from '@material-ui/core';
 import classes from './LogIn.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import firebase from 'firebase';
-import {logIn, logInProcessFailed, logInProcessStart, logInProcessSucceed} from '../../store/session/actions';
+import {
+  logIn,
+  logInProcessFailed,
+  logInProcessStart,
+  logInProcessSucceed,
+  /*setUserType,*/
+} from '../../store/session/actions';
 import {useFormik} from 'formik';
+import Loader from '../Loader/Loader';
 
 export default function LogIn() {
   const history = useHistory();
@@ -20,6 +27,7 @@ export default function LogIn() {
       userType: rootStore.session.authUser?.userType, //syntax sugar
     };
   });
+  //const userType = useSelector((rootStore) => rootStore.session.userType);
 
   useEffect(() => {
     //console.log('useEffect сработал: isAuth и userType теперь равны:', isAuth, userType);
@@ -60,6 +68,13 @@ export default function LogIn() {
       await putEntityToLocalStorage(entity);
 
       dispatch(logInProcessSucceed(entity));
+
+      //const userType = useSelector((rootStore) => rootStore.session.authUser?.userType);
+
+      console.log('USERTYPE DON IS', userType);
+      /*
+      dispatch(setUserType(userType));
+*/
     } catch (error) {
       dispatch(logInProcessFailed(error.message));
     }
@@ -104,7 +119,11 @@ export default function LogIn() {
     },
   });
   if (isLoading) {
-    return <> Loading...</>;
+    return (
+      <>
+        <Loader />
+      </>
+    );
   }
   return (
     <form onSubmit={handleSubmit}>

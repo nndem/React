@@ -8,17 +8,31 @@ import {DialogContentText} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import {useFormik} from 'formik';
+import DeleteProject from './DeleteProject';
+import {useDispatch, useSelector} from 'react-redux';
+import {setCompanyProjectsList} from '../../store/company/actions';
 
 export default function ProfileForCompany() {
-  const [projectList, setProjectList] = useState(null);
+  //const [projectsList, setProjectsList] = useState(null);
+
+  const projectsList = useSelector((rootStore) => rootStore.company.companyProjects);
+
+  const dispatch = useDispatch();
 
   const showProjects = async () => {
     try {
       const projectsList = await getProjectsList();
+      console.log('await getProjectsList()', projectsList);
+      console.log('projectsList11:', projectsList);
       const companyId = getCompanyId();
       const currentCompanyProjects = getCurrentCompanyProjects(projectsList, companyId);
       console.log('currentCompanyProjects:', currentCompanyProjects);
-      setProjectList(Object.values(currentCompanyProjects) || []);
+
+      // изменим локальный state
+      //setProjectsList(Object.values(currentCompanyProjects) || []);
+
+      //запишем в в глобальный state этот список projects, хотя можно было и немножечко раньше это сделать
+      dispatch(setCompanyProjectsList(currentCompanyProjects));
     } catch (e) {
       console.error(e);
     }
@@ -28,12 +42,12 @@ export default function ProfileForCompany() {
     // тянуть данные из stora, если их  нет то выполить запрос на сервер и записываю в store
     //  пока он всегда тянет актуальные данные
     //showProjects();   //todo: автоматически обновлять
-    if (!!!projectList) {
+    if (!!!projectsList) {
       console.log('useEffect сработал.......');
       // если projectsList пустой,то выполнится. А он и так пустой, потому что его иници
       showProjects();
     }
-  }, [projectList]);
+  }, [projectsList]);
 
   const getProjectsList = async () => {
     let listOfProjectsFetched = [];
@@ -44,9 +58,10 @@ export default function ProfileForCompany() {
       .equalTo('project')
       .once('value', (snap) => {
         const entitiesFetched = snap.val();
-        listOfProjectsFetched = Object.values(entitiesFetched);
-
-        console.log('listOfProjectsFetched:', listOfProjectsFetched);
+        if (entitiesFetched) {
+          listOfProjectsFetched = Object.values(entitiesFetched);
+          console.log('listOfProjectsFetched222:', listOfProjectsFetched);
+        }
       });
     return listOfProjectsFetched;
   };
@@ -57,10 +72,12 @@ export default function ProfileForCompany() {
     return JSON.parse(localStorage.getItem('Entity')).id;
   };
 
-  const getCurrentCompanyProjects = (projectList, companyId) => {
-    console.log('projectsListForFiltering:', projectList);
+  //const projectsList = await getProjectsList();
+
+  const getCurrentCompanyProjects = (projectsList, companyId) => {
+    console.log('projectsListForFiltering:', projectsList);
     console.log('companyIdForFiltering:', companyId);
-    return projectList.filter((element) => element.id_company === companyId) || console.log('No Current Projects');
+    return projectsList.filter((element) => element.id_company === companyId) || console.log('No Current Projects');
   };
 
   // Ниже представлен код для отрисовки всплывающей формы
@@ -75,9 +92,35 @@ export default function ProfileForCompany() {
     setOpen(false);
   };
 
-  const handleCloseProj = () => {
-    //const companyOpenedProjects = showProjects();
-    alert('choose project to close'); //Todo: добавить функционал
+  const handleEditProj = () => {
+    //editProject(); либо функция, либо компонента
+    alert('Функция еще не определена');
+  };
+
+  const handleCloseProject = async () => {
+    const projectsList = await getProjectsList();
+    const companyId = getCompanyId();
+
+    const currentCompanyProjects = getCurrentCompanyProjects(projectsList, companyId);
+    //запишем в store этот список projects, хотя можно было и немножечко раньше это сделать
+    dispatch(setCompanyProjectsList(currentCompanyProjects));
+    return <DeleteProject />;
+  };
+
+  const handleCloseProj = async (idx) => {
+    //alert(idx);
+    const projectsList = await getProjectsList();
+    const companyId = getCompanyId();
+    const currentCompanyProjects = getCurrentCompanyProjects(projectsList, companyId);
+    console.log('Project to be deleted:', currentCompanyProjects[idx].id);
+
+    await firebase.database().ref('user/').child(currentCompanyProjects[idx].id).remove();
+
+    alert('project has been deleted');
+
+    //add confirm dialog
+
+    //alert('Функция еще не определена'); //Todo: добавить функционал
   };
 
   const createEntityInRealTimeDataBase = async () => {
@@ -113,7 +156,16 @@ export default function ProfileForCompany() {
     },
     onSubmit: async () => {
       try {
-        await createEntityInRealTimeDataBase();
+        //создание в firebase
+        const newEntity = await createEntityInRealTimeDataBase();
+
+        //запись в локальный store
+        //setProjectsList(newEntity);
+
+        //запись в глобальный store
+        dispatch(setCompanyProjectsList(newEntity));
+
+        // подгрузка на свою страницу
         setOpen(false);
       } catch (error) {
         console.error(error);
@@ -127,8 +179,18 @@ export default function ProfileForCompany() {
 
       <ul>
         {'CURRENT COMPANY PROJECTS:'}
-        {projectList?.map((el) => {
-          return <li>{el?.projectName}</li>;
+        {projectsList?.map((el, idx) => {
+          return (
+            <li>
+              {el?.projectName}
+              <Button variant="outlined" color="primary" onClick={handleEditProj}>
+                Edit project
+              </Button>
+              <Button variant="outlined" color="primary" onClick={() => handleCloseProj(idx)}>
+                Close the project
+              </Button>
+            </li>
+          );
         })}
       </ul>
 
@@ -136,9 +198,9 @@ export default function ProfileForCompany() {
         Add new project
       </Button>
 
-      <Button variant="outlined" color="primary" onClick={handleCloseProj}>
+      {/*      <Button variant="outlined" color="primary" onClick={handleCloseProject}>
         Close the project
-      </Button>
+      </Button>*/}
 
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">SOME_TEXT</DialogTitle>

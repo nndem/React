@@ -1,10 +1,10 @@
 import types from './types';
 
 const initialState = {
-  authUser: null, // authUser -  для пришедшей сущности. Нет.
+  authUser: null,
   isAuth: false,
   isLoading: false,
-  userType: 'developer',
+  //userType: 'developer',
 };
 
 export const sessionReducer = (state = initialState, action) => {
@@ -18,8 +18,8 @@ export const sessionReducer = (state = initialState, action) => {
     case types.LOGIN_PROCESS_FAILED:
       return {...state, isLoading: false, isAuth: false, authUser: null};
 
-    case types.SET_USER_TYPE:
-      return {...state, userType: action.payload};
+    /*    case types.SET_USER_TYPE:
+      return {...state, userType: action.payload};*/
 
     case types.LOG_IN:
       return {...state, isAuth: true};

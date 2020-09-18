@@ -2,6 +2,7 @@ import React, {createContext, useCallback, useEffect, useState} from 'react';
 import firebase from 'firebase';
 import {logInProcessSucceed} from '../store/session/actions';
 import {useDispatch} from 'react-redux';
+import Loader from '../components/Loader/Loader';
 
 export const AuthUserContext = createContext({authUser: null}); //создаем  контекст  [AuthUserContext.Provider, AuthUserContext.Consumer]
 
@@ -37,7 +38,7 @@ const AuthUserProvider = ({children}) => {
     return () => unsubscribe();
   }, []);
 
-  return <AuthUserContext.Provider value={authUser}> {!isLoading ? children : 'Loading...'} </AuthUserContext.Provider>; // сделать loader
+  return <AuthUserContext.Provider value={authUser}> {!isLoading ? children : <Loader />} </AuthUserContext.Provider>; // сделать loader
 };
 
 export default AuthUserProvider;

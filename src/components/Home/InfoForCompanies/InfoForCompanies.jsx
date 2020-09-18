@@ -87,7 +87,7 @@ export default function InfoForCompanies() {
                         </Grid>
                         <Grid item sm={12}>
                           {userType === 'company' ? (
-                            <Button variant="outlined" onClick={() => alert('Chat opened')}>
+                            <Button variant="outlined" onClick={() => alert('Функция пока недоступна')}>
                               Start chatting
                             </Button>
                           ) : (

@@ -4,7 +4,7 @@ import {Button} from '@material-ui/core';
 export function JoinProjectButton() {
   const handleOnClick = () => {
     try {
-      alert('Ваша заявка на участие отправлена'); // Todo: придумать логику
+      alert('Функция пока недоступна'); // Todo: придумать логику
     } catch (e) {
       console.error(e);
     }

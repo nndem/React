@@ -10,6 +10,8 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
+import * as firebase from 'firebase';
+import {useFormik} from 'formik';
 
 export default function ProfileForDeveloper() {
   const [developerInfo, setDeveloperInfo] = useState(null);
@@ -49,7 +51,7 @@ export default function ProfileForDeveloper() {
               </Accordion>
             </Grid>
             <Grid item sm={12}>
-              <Button variant="outlined" onClick={() => alert('Профиль отредактирован!')}>
+              <Button variant="outlined" onClick={() => alert('Функция пока недоступна!')}>
                 Edit profile
               </Button>
             </Grid>

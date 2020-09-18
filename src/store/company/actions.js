@@ -23,3 +23,11 @@ export const setCompanyName = (companyName) => {
     payload: companyName,
   };
 };
+
+export const setCompanyProjectsList = (projectsList) => {
+  console.log('dispatching SET_COMPANY_PROJECTS_LIST');
+  return {
+    type: types.SET_COMPANY_PROJECTS_LIST,
+    payload: projectsList,
+  };
+};

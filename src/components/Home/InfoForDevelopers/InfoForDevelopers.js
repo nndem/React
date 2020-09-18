@@ -15,6 +15,7 @@ const InfoForDevelopers = () => {
   const userType = useSelector((rootStore) => rootStore.session.authUser?.userType);
 
   const getUsers = useCallback(async () => {
+    /*console.log("getUserEntities('project'):", await getUserEntities('project'));*/
     return await getUserEntities('project');
   }, []);
 
@@ -25,7 +26,11 @@ const InfoForDevelopers = () => {
   useEffect(() => {
     if (!!!projects.length) {
       getUsers().then((res) => {
-        setProjects(Object.values(res));
+        if (res) {
+          setProjects(Object.values(res));
+        } else {
+          console.log('No project fetched');
+        }
       });
     }
   }, []);
@@ -42,7 +47,13 @@ const InfoForDevelopers = () => {
               <div key={i}>
                 <Accordion>
                   <AccordionSummary aria-controls="panel1a-content" id="panel1a-header" expandIcon={<ExpandMoreIcon />}>
-                    <img className={classes.logo} src={element?.logo} alt="icon" />
+                    {element.logo ? (
+                      <img className={classes.logo} src={element?.logo} alt="icon" />
+                    ) : (
+                      element.companyName
+                    )}
+                    {/*<img className={classes.logo} src={element?.logo} alt="icon" />*/}
+
                     <Typography className={classes.heading} align="center" variant="h6">
                       {element.projectName}
                     </Typography>
