@@ -11,6 +11,7 @@ export default function DeleteProject() {
 
   return (
     <>
+      {console.log('HELLOOOO')}
       <FormControl>
         <InputLabel id="demo-mutiple-name-label">Name</InputLabel>
         <Select

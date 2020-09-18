@@ -8,46 +8,56 @@ import {DialogContentText} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import {useFormik} from 'formik';
-import DeleteProject from './DeleteProject';
 import {useDispatch, useSelector} from 'react-redux';
 import {setCompanyProjectsList} from '../../store/company/actions';
 
 export default function ProfileForCompany() {
-  //const [projectsList, setProjectsList] = useState(null);
-
   const projectsList = useSelector((rootStore) => rootStore.company.companyProjects);
+  const userAuth = useSelector((rootStore) => rootStore.session.authUser);
 
   const dispatch = useDispatch();
 
   const showProjects = async () => {
     try {
       const projectsList = await getProjectsList();
-      console.log('await getProjectsList()', projectsList);
-      console.log('projectsList11:', projectsList);
       const companyId = getCompanyId();
       const currentCompanyProjects = getCurrentCompanyProjects(projectsList, companyId);
-      console.log('currentCompanyProjects:', currentCompanyProjects);
-
-      // изменим локальный state
-      //setProjectsList(Object.values(currentCompanyProjects) || []);
-
-      //запишем в в глобальный state этот список projects, хотя можно было и немножечко раньше это сделать
       dispatch(setCompanyProjectsList(currentCompanyProjects));
     } catch (e) {
       console.error(e);
     }
   };
 
+  const [deleteButtonToggle, setDeleteButtonToggle] = useState(false);
+
   useEffect(() => {
-    // тянуть данные из stora, если их  нет то выполить запрос на сервер и записываю в store
-    //  пока он всегда тянет актуальные данные
-    //showProjects();   //todo: автоматически обновлять
     if (!!!projectsList) {
       console.log('useEffect сработал.......');
-      // если projectsList пустой,то выполнится. А он и так пустой, потому что его иници
       showProjects();
     }
-  }, [projectsList]);
+
+    if (deleteButtonToggle) {
+      console.log('ready to delete!');
+
+      //deleteProject(idx)
+      //setDeleteButtonToggle(false);
+
+      //handleCloseProject();
+      //showProjects();
+    }
+  }, [projectsList, userAuth, deleteButtonToggle]);
+
+  /* const deleteProject = (idx)=>{
+    const currentCompanyProjects = getCurrentCompanyProjects(projectsList, companyId);
+    console.log('currentCompanyProjects:', currentCompanyProjects);
+    //удаление с FB
+    ;
+    //await firebase.database().ref('users/').child(currentCompanyProjects[idx].id).remove();
+
+    //обновление store
+    await getProjectsList();
+
+  }*/
 
   const getProjectsList = async () => {
     let listOfProjectsFetched = [];
@@ -60,23 +70,18 @@ export default function ProfileForCompany() {
         const entitiesFetched = snap.val();
         if (entitiesFetched) {
           listOfProjectsFetched = Object.values(entitiesFetched);
-          console.log('listOfProjectsFetched222:', listOfProjectsFetched);
         }
       });
     return listOfProjectsFetched;
   };
 
   const getCompanyId = () => {
-    //Todo: брать со stora
-    console.log('companyId:', JSON.parse(localStorage.getItem('Entity')).id);
-    return JSON.parse(localStorage.getItem('Entity')).id;
+    return userAuth.id;
+
+    //
   };
 
-  //const projectsList = await getProjectsList();
-
   const getCurrentCompanyProjects = (projectsList, companyId) => {
-    console.log('projectsListForFiltering:', projectsList);
-    console.log('companyIdForFiltering:', companyId);
     return projectsList.filter((element) => element.id_company === companyId) || console.log('No Current Projects');
   };
 
@@ -92,35 +97,18 @@ export default function ProfileForCompany() {
     setOpen(false);
   };
 
-  const handleEditProj = () => {
-    //editProject(); либо функция, либо компонента
-    alert('Функция еще не определена');
-  };
+  const companyId = userAuth.id;
 
-  const handleCloseProject = async () => {
-    const projectsList = await getProjectsList();
-    const companyId = getCompanyId();
-
+  const handleCloseProject = async (idx) => {
+    //setDeleteButtonToggle(true);
+    console.log('IDX of project to delete:', idx);
     const currentCompanyProjects = getCurrentCompanyProjects(projectsList, companyId);
-    //запишем в store этот список projects, хотя можно было и немножечко раньше это сделать
-    dispatch(setCompanyProjectsList(currentCompanyProjects));
-    return <DeleteProject />;
-  };
+    console.log('AllCompanyProjects:', currentCompanyProjects);
+    console.log('project to be deleted is:', currentCompanyProjects[idx]);
+    await firebase.database().ref('users/').child(currentCompanyProjects[idx].id).remove();
 
-  const handleCloseProj = async (idx) => {
-    //alert(idx);
-    const projectsList = await getProjectsList();
-    const companyId = getCompanyId();
-    const currentCompanyProjects = getCurrentCompanyProjects(projectsList, companyId);
-    console.log('Project to be deleted:', currentCompanyProjects[idx].id);
-
-    await firebase.database().ref('user/').child(currentCompanyProjects[idx].id).remove();
-
-    alert('project has been deleted');
-
-    //add confirm dialog
-
-    //alert('Функция еще не определена'); //Todo: добавить функционал
+    //обновить показ
+    showProjects();
   };
 
   const createEntityInRealTimeDataBase = async () => {
@@ -159,13 +147,9 @@ export default function ProfileForCompany() {
         //создание в firebase
         const newEntity = await createEntityInRealTimeDataBase();
 
-        //запись в локальный store
-        //setProjectsList(newEntity);
-
         //запись в глобальный store
         dispatch(setCompanyProjectsList(newEntity));
 
-        // подгрузка на свою страницу
         setOpen(false);
       } catch (error) {
         console.error(error);
@@ -183,10 +167,8 @@ export default function ProfileForCompany() {
           return (
             <li>
               {el?.projectName}
-              <Button variant="outlined" color="primary" onClick={handleEditProj}>
-                Edit project
-              </Button>
-              <Button variant="outlined" color="primary" onClick={() => handleCloseProj(idx)}>
+              {console.log('idx in MAP is:', idx)}
+              <Button variant="outlined" color="primary" onClick={() => handleCloseProject(idx)}>
                 Close the project
               </Button>
             </li>
@@ -197,10 +179,6 @@ export default function ProfileForCompany() {
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
         Add new project
       </Button>
-
-      {/*      <Button variant="outlined" color="primary" onClick={handleCloseProject}>
-        Close the project
-      </Button>*/}
 
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">SOME_TEXT</DialogTitle>
