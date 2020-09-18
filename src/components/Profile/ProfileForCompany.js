@@ -38,26 +38,8 @@ export default function ProfileForCompany() {
 
     if (deleteButtonToggle) {
       console.log('ready to delete!');
-
-      //deleteProject(idx)
-      //setDeleteButtonToggle(false);
-
-      //handleCloseProject();
-      //showProjects();
     }
   }, [projectsList, userAuth, deleteButtonToggle]);
-
-  /* const deleteProject = (idx)=>{
-    const currentCompanyProjects = getCurrentCompanyProjects(projectsList, companyId);
-    console.log('currentCompanyProjects:', currentCompanyProjects);
-    //удаление с FB
-    ;
-    //await firebase.database().ref('users/').child(currentCompanyProjects[idx].id).remove();
-
-    //обновление store
-    await getProjectsList();
-
-  }*/
 
   const getProjectsList = async () => {
     let listOfProjectsFetched = [];
@@ -100,11 +82,8 @@ export default function ProfileForCompany() {
   const companyId = userAuth.id;
 
   const handleCloseProject = async (idx) => {
-    //setDeleteButtonToggle(true);
-    console.log('IDX of project to delete:', idx);
+    setDeleteButtonToggle(true);
     const currentCompanyProjects = getCurrentCompanyProjects(projectsList, companyId);
-    console.log('AllCompanyProjects:', currentCompanyProjects);
-    console.log('project to be deleted is:', currentCompanyProjects[idx]);
     await firebase.database().ref('users/').child(currentCompanyProjects[idx].id).remove();
 
     //обновить показ
@@ -167,7 +146,6 @@ export default function ProfileForCompany() {
           return (
             <li>
               {el?.projectName}
-              {console.log('idx in MAP is:', idx)}
               <Button variant="outlined" color="primary" onClick={() => handleCloseProject(idx)}>
                 Close the project
               </Button>
