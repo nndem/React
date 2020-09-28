@@ -1,11 +1,11 @@
 import types from './types';
 
-/*export const setUserType = (userType) => {
+export const setUserType = (userType) => {
   return {
     type: types.SET_USER_TYPE,
     payload: userType,
   };
-};*/
+};
 
 export const logInProcessStart = () => {
   return {

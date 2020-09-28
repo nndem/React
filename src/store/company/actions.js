@@ -8,22 +8,6 @@ export const setCompanyPassword = (password) => {
   };
 };
 
-export const setCompanyEmail = (email) => {
-  console.log('dispatching SET_COMPANY_EMAIL');
-  return {
-    type: types.SET_COMPANY_EMAIL,
-    payload: email,
-  };
-};
-
-export const setCompanyName = (companyName) => {
-  console.log('dispatching SET_COMPANY_NAME');
-  return {
-    type: types.SET_COMPANY_NAME,
-    payload: companyName,
-  };
-};
-
 export const setCompanyProjectsList = (projectsList) => {
   console.log('dispatching SET_COMPANY_PROJECTS_LIST');
   return {

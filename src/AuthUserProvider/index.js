@@ -38,7 +38,7 @@ const AuthUserProvider = ({children}) => {
     return () => unsubscribe();
   }, []);
 
-  return <AuthUserContext.Provider value={authUser}> {!isLoading ? children : <Loader />} </AuthUserContext.Provider>; // сделать loader
+  return <AuthUserContext.Provider value={authUser}> {!isLoading ? children : <Loader />} </AuthUserContext.Provider>;
 };
 
 export default AuthUserProvider;

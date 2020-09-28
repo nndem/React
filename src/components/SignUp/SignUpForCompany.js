@@ -6,7 +6,7 @@ import classes from './SignUp.module.css';
 import firebase from 'firebase';
 import {useDispatch} from 'react-redux';
 import {useHistory} from 'react-router-dom';
-import {logInProcessFailed, logInProcessSucceed, setUserType} from '../../store/session/actions';
+import {logInProcessFailed, logInProcessSucceed} from '../../store/session/actions';
 import {useFormik} from 'formik';
 
 export default function SignUpForCompany() {
@@ -55,8 +55,8 @@ export default function SignUpForCompany() {
 
   const loadPage = () => {
     console.log('REFERRING...');
-    history.push('/profile');
-    //history.push('/infoforcompanies');
+    //history.push('/profile');
+    history.push('/infoforcompanies');
   };
 
   const {handleSubmit, handleChange, values} = useFormik({

@@ -6,7 +6,7 @@ import classes from './SignUp.module.css';
 import {useDispatch} from 'react-redux';
 import {useHistory} from 'react-router';
 
-import {Button, TextField, OutlinedInput, Typography} from '@material-ui/core';
+import {Button, TextField, Typography} from '@material-ui/core';
 
 import {logInProcessFailed, logInProcessStart, logInProcessSucceed} from '../../store/session/actions';
 import {useFormik} from 'formik';
@@ -72,8 +72,7 @@ export default function SignUpForDev() {
 
   const loadPage = () => {
     console.log('REFERRING...');
-    history.push('/profile');
-    //history.push('/infofordevelopers');
+    history.push('/infofordevelopers');
   };
 
   const {handleSubmit, handleChange, values, errors} = useFormik({

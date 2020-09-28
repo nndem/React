@@ -3,7 +3,6 @@ import types from './types';
 const initialState = {
   companyEmail: null,
   companyPassword: null,
-
   companyProjects: null,
 };
 

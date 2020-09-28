@@ -16,22 +16,6 @@ export const setDeveloperEmail = (email) => {
   };
 };
 
-export const setDeveloperName = (name) => {
-  console.log('dispatching SET_DEVELOPER_NAME');
-  return {
-    type: types.SET_DEVELOPER_NAME,
-    payload: name,
-  };
-};
-
-export const setDeveloperSurname = (surname) => {
-  console.log('dispatching SET_DEVELOPER_SURNAME');
-  return {
-    type: types.SET_DEVELOPER_SURNAME,
-    payload: surname,
-  };
-};
-
 export const setDeveloperStack = (stack) => {
   console.log('dispatching SET_DEVELOPER_STACK');
   return {
@@ -45,13 +29,5 @@ export const setDeveloperExperience = (experience) => {
   return {
     type: types.SET_DEVELOPER_EXPERIENCE,
     payload: experience,
-  };
-};
-
-export const setDeveloperDescription = (description) => {
-  console.log('dispatching SET_DEVELOPER_Description');
-  return {
-    type: types.SET_DEVELOPER_DESCRIPTION,
-    payload: description,
   };
 };

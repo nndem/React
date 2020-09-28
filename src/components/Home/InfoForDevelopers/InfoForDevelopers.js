@@ -15,7 +15,6 @@ const InfoForDevelopers = () => {
   const userType = useSelector((rootStore) => rootStore.session.authUser?.userType);
 
   const getUsers = useCallback(async () => {
-    /*console.log("getUserEntities('project'):", await getUserEntities('project'));*/
     return await getUserEntities('project');
   }, []);
 
@@ -52,7 +51,6 @@ const InfoForDevelopers = () => {
                     ) : (
                       element.companyName
                     )}
-                    {/*<img className={classes.logo} src={element?.logo} alt="icon" />*/}
 
                     <Typography className={classes.heading} align="center" variant="h6">
                       {element.projectName}

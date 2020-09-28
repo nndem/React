@@ -1,18 +1,10 @@
-// Страница LogIn
-
 import React, {useEffect} from 'react';
 import {useHistory} from 'react-router-dom';
 import {Button, TextField} from '@material-ui/core';
 import classes from './LogIn.module.css';
 import {useDispatch, useSelector} from 'react-redux';
 import firebase from 'firebase';
-import {
-  logIn,
-  logInProcessFailed,
-  logInProcessStart,
-  logInProcessSucceed,
-  /*setUserType,*/
-} from '../../store/session/actions';
+import {logInProcessFailed, logInProcessStart, logInProcessSucceed} from '../../store/session/actions';
 import {useFormik} from 'formik';
 import Loader from '../Loader/Loader';
 
@@ -20,24 +12,21 @@ export default function LogIn() {
   const history = useHistory();
   const dispatch = useDispatch();
   const {isLoading, isAuth, userType} = useSelector((rootStore) => {
-    // подписал компонент на изменения stora
     return {
       isAuth: rootStore.session.isAuth,
       isLoading: rootStore.session.isLoading,
       userType: rootStore.session.authUser?.userType, //syntax sugar
     };
   });
-  //const userType = useSelector((rootStore) => rootStore.session.userType);
 
   useEffect(() => {
-    //console.log('useEffect сработал: isAuth и userType теперь равны:', isAuth, userType);
     if (isAuth && userType) {
       loadPage(userType);
     }
-  }, [isAuth, userType]); //функция срабатывает при изменении isAuth, т.е. функция зависит от свойства isAuth
+  }, [isAuth, userType]);
 
   const loadPage = (userType) => {
-    //dispatch(logIn());
+
     const path = homePage(userType);
     history.push(path);
   };
@@ -62,19 +51,10 @@ export default function LogIn() {
       const userId = authUserCredits.user.uid;
 
       const entity = await getEntityFromFirebase(userId);
-
-      console.log('entity:', entity);
-
       await putEntityToLocalStorage(entity);
 
       dispatch(logInProcessSucceed(entity));
 
-      //const userType = useSelector((rootStore) => rootStore.session.authUser?.userType);
-
-      console.log('USERTYPE DON IS', userType);
-      /*
-      dispatch(setUserType(userType));
-*/
     } catch (error) {
       dispatch(logInProcessFailed(error.message));
     }
@@ -109,10 +89,9 @@ export default function LogIn() {
       email: '',
       password: '',
     },
-    onSubmit: async (userType) => {
+    onSubmit: async () => {
       try {
         await SignIn();
-        //await loadPage(userType);
       } catch (error) {
         console.error(error);
       }
@@ -121,7 +100,7 @@ export default function LogIn() {
   if (isLoading) {
     return (
       <>
-        <Loader />
+        <Loader/>
       </>
     );
   }
@@ -154,7 +133,7 @@ export default function LogIn() {
       />
 
       <Button
-        type="submit" // привязывает кнопку к форме, onSubmit работает только на форме, поэтому пишут onClick, либо как я
+        type="submit"
         fullWidth
         variant="contained"
         color="primary"

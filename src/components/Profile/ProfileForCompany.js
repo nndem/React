@@ -85,8 +85,6 @@ export default function ProfileForCompany() {
     setDeleteButtonToggle(true);
     const currentCompanyProjects = getCurrentCompanyProjects(projectsList, companyId);
     await firebase.database().ref('users/').child(currentCompanyProjects[idx].id).remove();
-
-    //обновить показ
     showProjects();
   };
 
@@ -115,7 +113,6 @@ export default function ProfileForCompany() {
 
   const {handleSubmit, handleChange, values} = useFormik({
     initialValues: {
-      //companyName: '',
       projectName: '',
       description: '',
       deadlines: '',
@@ -126,7 +123,6 @@ export default function ProfileForCompany() {
         //создание в firebase
         const newEntity = await createEntityInRealTimeDataBase();
 
-        //запись в глобальный store
         dispatch(setCompanyProjectsList(newEntity));
 
         setOpen(false);

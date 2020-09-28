@@ -59,7 +59,7 @@ const Nav = () => {
         )}
         {isAuth ? (
           <NavLink to="/profile" activeClassName={classes.activeLink}>
-            Мой профиль )
+            Мой профиль
           </NavLink>
         ) : (
           ''

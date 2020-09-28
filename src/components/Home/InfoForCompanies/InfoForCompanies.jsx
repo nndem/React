@@ -34,7 +34,6 @@ export default function InfoForCompanies() {
         setDeveloper(Object.values(res));
       });
     }
-    //excludeCurrentDeveloper();
   }, []);
 
   console.log('Full list of developers:', constantDevelopers);
@@ -59,7 +58,6 @@ export default function InfoForCompanies() {
       {isAuth ? (
         <Grid container spacing={2}>
           {mergedDevelopers.map((element, i) => {
-            /* console.log('userIDtobeExcluded:', excludeCurrentDeveloperById());*/
             if (element.id !== excludeCurrentDeveloperById()) {
               return (
                 <Grid key={i} item xs={3} spacing={3}>
